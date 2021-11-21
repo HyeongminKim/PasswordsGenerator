@@ -32,11 +32,4 @@ fi
 echo "Cleanup cache files..."
 rm *.class
 
-echo -n "Do you want to create a shortcut in the application folder? (Y/n) > "
-read input
-if [ "$input" == "n" -o "$input" == "N" ]; then
-    exit 0
-else
-    ln -s $(pwd)/passwdGen.jar ~/Applications
-fi
-
+open .
