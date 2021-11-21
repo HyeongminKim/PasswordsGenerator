@@ -31,7 +31,7 @@ echo Generating passwdGen.jar file...
 jar -cmf Manifest.mf passwdGen.jar *.class
 if "%ERRORLEVEL%" == "1" (
     echo.
-    echo jar file couldn't be created. Please check if you are targeting the wrong class file.
+    echo jar file couldn't be created. Please check once again that the jar file is completely closed.
     echo If you want to see log for a long time, try it manually.
     echo This window will close automatically after 60 seconds...
     timeout 60 > NUL
