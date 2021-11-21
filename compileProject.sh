@@ -2,16 +2,15 @@
 
 echo -e "LICENSE: This script is licensed under the MIT License\n"
 
+if [ "$(uname -s)" != "Darwin" ]; then
+    echo -e "\033[31mERROR! This script only support macOS"
+    exit 3
+fi
+
 which javac > /dev/null 2>&1
 if [ $? != 0 ]; then
     echo -e "\033[31mERROR! This script requires JDK.\033[m"
     exit 1
-fi
-
-
-if [ "$(uname -s)" != "Darwin" ]; then
-    echo -e "\033[31mERROR! This script only support macOS"
-    exit 3
 fi
 
 cd PasswordsGenerator 2>/dev/null
