@@ -196,10 +196,11 @@ public class passwdGen implements WindowListener {
         generate.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if (passwordCount.getText().trim().equals("")) {
+                    passwordCount.setText(passwordCount.getText().trim());
+                    if (passwordCount.getText().equals("")) {
                         throw new NumberFormatException("No length value entered.");
                     }
-                    String result = generatePassword(frame, Integer.parseInt(passwordCount.getText().trim()), containCaps.getState(), containNum.getState(), containUniqueSymbol.getState());
+                    String result = generatePassword(frame, Integer.parseInt(passwordCount.getText()), containCaps.getState(), containNum.getState(), containUniqueSymbol.getState());
                     if (result == null) {
                         throw new NullPointerException();
                     }
