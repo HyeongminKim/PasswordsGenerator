@@ -35,6 +35,9 @@ if "%ERRORLEVEL%" == "1" (
     echo If you want to see log for a long time, try it manually.
     echo This window will close automatically after 60 seconds...
     timeout 60 > NUL
+
+    echo Cleanup cache files...
+    del *.class
     exit
 )
 

@@ -43,6 +43,9 @@ echo "Generating passwdGen.jar file..."
 jar -cmf Manifest.mf passwdGen.jar *.class
 if [ $? != 0 ]; then
     echo -e "\033[31mjar file couldn't be created. Please check if you are targeting the wrong class file.\033[m"
+
+    echo "Cleanup cache files..."
+    rm *.class
     exit 2
 fi
 
