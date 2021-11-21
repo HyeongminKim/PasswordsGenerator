@@ -5,12 +5,14 @@ echo -e "LICENSE: This script is licensed under the MIT License\n"
 if [ "$(uname -s)" = "Darwin" ]; then
     pgrep WindowServer > /dev/null 2>&1
     if [ $? != 0 ]; then
-        echo -e "\033[33mWarning! No GUI detected. This application requires a GUI.\033[m"
+        echo -e "\033[31mERROR! No GUI detected. This application requires a GUI.\033[m"
+        exit 3
     fi
 elif [ "$(uname -s)" = "Linux" ]; then
     type Xorg > /dev/null 2>&1
     if [ $? != 0 ]; then
-        echo -e "\033[33mWarning! No GUI detected. This application requires a GUI. \033[m"
+        echo -e "\033[31mERROR! No GUI detected. This application requires a GUI. \033[m"
+        exit 3
     fi
 else
     echo -e "\033[31mERROR! This script only support macOS or Linux.\033[m"
