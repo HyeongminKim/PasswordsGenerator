@@ -29,8 +29,8 @@ public class passwdGen implements WindowListener {
     private String generatePassword(Frame target, int length, boolean caps, boolean num, boolean unique) throws NumberFormatException {
         String result = "";
 
-        if(length <= 0) {
-            throw new NumberFormatException();
+        if(length <= 0 || length > 256) {
+            throw new NumberFormatException("For input number: " + length);
         }
 
         if(length < 8 || !(caps && num && unique)) {
@@ -104,7 +104,7 @@ public class passwdGen implements WindowListener {
         Button submit = new Button("승인");
         submit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                resultOutput.append("\n" + formatedLogcat("INFO", "알럿이 비활성화됨: [" + title + "] " + truncate(message, 10)));
+                resultOutput.append("\n" + formatedLogcat("INFO", "알럿이 비활성화됨: [" + title + "] " + truncate(message, 14)));
                 alert.dispose();
             }
         });
@@ -113,7 +113,7 @@ public class passwdGen implements WindowListener {
         alert.add("North", msg);
         alert.add("South", submit);
         alert.pack();
-        resultOutput.append("\n" + formatedLogcat("INFO", "알럿이 활성화됨: [" + title + "] " + truncate(message, 10)));
+        resultOutput.append("\n" + formatedLogcat("INFO", "알럿이 활성화됨: [" + title + "] " + truncate(message, 14)));
         alert.setVisible(true);
     }
 
@@ -196,7 +196,10 @@ public class passwdGen implements WindowListener {
         generate.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String result = generatePassword(frame, Integer.parseInt(passwordCount.getText()), containCaps.getState(), containNum.getState(), containUniqueSymbol.getState());
+                    if (passwordCount.getText().trim().equals("")) {
+                        throw new NumberFormatException("No length value entered.");
+                    }
+                    String result = generatePassword(frame, Integer.parseInt(passwordCount.getText().trim()), containCaps.getState(), containNum.getState(), containUniqueSymbol.getState());
                     if (result == null) {
                         throw new NullPointerException();
                     }
@@ -207,10 +210,10 @@ public class passwdGen implements WindowListener {
                     resultOutput.append("\n" + formatedLogcat("INFO", "비밀번호가 성공적으로 생성되었습니다. "));
                     showAlert(frame, frame.getTitle(), "생성된 비밀번호는: " + result + " 입니다. 이 비밀번호는 클립보드에 이미 저장되었으므로 스크린 샷을 따로 촬영하지 않아도 됩니다. ");
                 } catch(NumberFormatException exception) {
-                    resultOutput.append("\n" + formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + passwordCount.getText() + " (은)는 비밀번호 길이를 생성할 수 있는 올바른 숫자가 아닙니다. " + "\n" + exception.getStackTrace()));
+                    resultOutput.append("\n" + formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "\n\t" + passwordCount.getText() + " (은)는 비밀번호 길이를 생성할 수 있는 올바른 숫자가 아닙니다. "));
                     showAlert(frame, frame.getTitle() + "- 오류", "비밀번호 길이 필드에는 자연수만 입력해야 합니다. 비밀번호 길이 필드를 다시 한번 확인하시길 바랍니다. ");
                 } catch(NullPointerException exception) {
-                    resultOutput.append("\n" + formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + "이 예외를 https://github.com/HyeongminKim (@HyeongminKim) 에게 제보하세요. " + "\n" + exception.getStackTrace()));
+                    resultOutput.append("\n" + formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "\n\t" + "이 예외를 https://github.com/HyeongminKim (@HyeongminKim) 에게 제보하세요. "));
                     showAlert(frame, frame.getTitle() + "- 오류", "알 수 없는 이유로 비밀번호가 생성되지 않았습니다. 주로 잘못된 규칙을 설정했거나 프로그램 버그로 인해 이 문제가 발생합니다. 설정하신 규칙과 이 메시지를 함께 스크린 샷을 촬영하여 이슈를 제보하여 주세요. ");
                 }
             }
