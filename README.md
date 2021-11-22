@@ -8,7 +8,7 @@
 - [compileProject.sh](https://github.com/HyeongminKim/PasswordsGenerator/blob/master/compileProject.sh) 스크립트를 사용해서 java 파일을 빌드합니다.
 - 또는 아래의 명령어를 사용해서 java 파일을 직접 빌드합니다. 생성된 jar 파일을 더블 클릭하여 실행할 수 있을 것입니다.
 ``` bash
-javac passwdGen.java
+javac PasswdGen.java
 jar -cmf Manifest.mf passwdGen.jar *.class
 ```
 

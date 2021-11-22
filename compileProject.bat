@@ -15,9 +15,9 @@ if not exist PasswordsGenerator (
 
 chcp 65001
 cd PasswordsGenerator
-echo Compiling passwdGen.java file...
+echo Compiling PasswdGen.java file...
 
-javac -encoding utf-8 passwdGen.java
+javac -encoding utf-8 PasswdGen.java
 if "%ERRORLEVEL%" == "1" (
     echo.
     echo The build seems to have failed. Please check again for syntax errors in the recently edited line.

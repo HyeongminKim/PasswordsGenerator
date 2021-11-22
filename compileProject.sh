@@ -32,8 +32,8 @@ if [ $? != 0 ]; then
     exit 2
 fi
 
-echo "Compiling passwdGen.java file..."
-javac passwdGen.java
+echo "Compiling PasswdGen.java file..."
+javac PasswdGen.java
 if [ $? != 0 ]; then
     echo -e "\nThe build seems to have failed. Please check again for syntax errors in the recently edited line."
     exit 2

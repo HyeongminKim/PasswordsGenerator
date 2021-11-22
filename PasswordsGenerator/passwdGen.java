@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.datatransfer.*;
 
-public class passwdGen extends WindowAdapter {
+public class PasswdGen extends WindowAdapter {
     private Frame frame;
     private Panel header, passCnt, context, action, footer;
     private Label welcomeText, pwdCnt, placeholderText;
@@ -13,7 +13,7 @@ public class passwdGen extends WindowAdapter {
     private TextArea guideText, resultOutput;
     private boolean generated;
 
-    public passwdGen() {
+    public PasswdGen() {
         init();
         setAction();
     }
@@ -238,7 +238,7 @@ public class passwdGen extends WindowAdapter {
     }
 
     public static void main(String[] args) {
-        new passwdGen();
+        new PasswdGen();
     }
 
     @Override
