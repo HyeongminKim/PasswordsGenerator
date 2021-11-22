@@ -10,6 +10,7 @@
 ``` bash
 javac PasswdGen.java
 jar -cmf Manifest.mf passwdGen.jar *.class
+java -jar passwdGen.jar
 ```
 
 #### Windows
