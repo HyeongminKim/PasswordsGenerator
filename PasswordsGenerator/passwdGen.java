@@ -180,6 +180,7 @@ public class PasswdGen extends WindowAdapter {
 
         frame.setSize(600, 150);
         frame.setLayout(new BorderLayout(1, 2));
+        frame.setResizable(false);
 
         frame.add("North", header);
         frame.add("West", passCnt);
