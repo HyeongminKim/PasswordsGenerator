@@ -17,6 +17,7 @@ public class PasswdGen extends WindowAdapter {
     private TextArea resultOutput;
     private boolean generated, exceptSimilarSymbol;
     private String exceptUniqueSymbol;
+    private String similarSymbol = "1l|Ii!joO0;:9gqxX.,";
 
     public PasswdGen() {
         init();
@@ -53,9 +54,29 @@ public class PasswdGen extends WindowAdapter {
                     if(caps) {
                         int select = (int)(Math.random() * 2 + 1);
                         char table = select == 1 ? (char)(Math.random() * 26 + 65) : (char)(Math.random() * 26 + 97);
+                        boolean flag = false;
+                        if(exceptSimilarSymbol) {
+                            for(int i = 0; i < similarSymbol.length(); i++) {
+                                if(similarSymbol.charAt(i) == table) {
+                                    flag = true;
+                                    break;
+                                }
+                            }
+                            if(flag) continue;
+                        }
                         result += table;
                     } else {
                         char table = (char)(Math.random() * 26 + 97);
+                        boolean flag = false;
+                        if(exceptSimilarSymbol) {
+                            for(int i = 0; i < similarSymbol.length(); i++) {
+                                if(similarSymbol.charAt(i) == table) {
+                                    flag = true;
+                                    break;
+                                }
+                            }
+                            if(flag) continue;
+                        }
                         result += table;
                     }
                     resultCount++;
@@ -63,6 +84,16 @@ public class PasswdGen extends WindowAdapter {
                 case 2:
                     if(num) {
                         char table = (char)(Math.random() * 10 + 48);
+                        boolean flag = false;
+                        if(exceptSimilarSymbol) {
+                            for(int i = 0; i < similarSymbol.length(); i++) {
+                                if(similarSymbol.charAt(i) == table) {
+                                    flag = true;
+                                    break;
+                                }
+                            }
+                            if(flag) continue;
+                        }
                         result += table;
                         resultCount++;
                     }
@@ -71,21 +102,58 @@ public class PasswdGen extends WindowAdapter {
                     if(unique) {
                         int select = (int)(Math.random() * 4 + 1);
                         char table;
+                        boolean flag = false;
                         switch(select) {
                             case 1:
                                 table = (char)(Math.random() * 15 + 33);
+                                if(exceptSimilarSymbol) {
+                                    for(int i = 0; i < similarSymbol.length(); i++) {
+                                        if(similarSymbol.charAt(i) == table) {
+                                            flag = true;
+                                            break;
+                                        }
+                                    }
+                                    if(flag) continue;
+                                }
                                 result += table;
                                 break;
                             case 2:
                                 table = (char)(Math.random() * 7 + 58);
+                                if(exceptSimilarSymbol) {
+                                    for(int i = 0; i < similarSymbol.length(); i++) {
+                                        if(similarSymbol.charAt(i) == table) {
+                                            flag = true;
+                                            break;
+                                        }
+                                    }
+                                    if(flag) continue;
+                                }
                                 result += table;
                                 break;
                             case 3:
                                 table = (char)(Math.random() * 6 + 91);
+                                if(exceptSimilarSymbol) {
+                                    for(int i = 0; i < similarSymbol.length(); i++) {
+                                        if(similarSymbol.charAt(i) == table) {
+                                            flag = true;
+                                            break;
+                                        }
+                                    }
+                                    if(flag) continue;
+                                }
                                 result += table;
                                 break;
                             case 4:
                                 table = (char)(Math.random() * 4 + 123);
+                                if(exceptSimilarSymbol) {
+                                    for(int i = 0; i < similarSymbol.length(); i++) {
+                                        if(similarSymbol.charAt(i) == table) {
+                                            flag = true;
+                                            break;
+                                        }
+                                    }
+                                    if(flag) continue;
+                                }
                                 result += table;
                                 break;
                         }
@@ -273,6 +341,7 @@ public class PasswdGen extends WindowAdapter {
                             if(parameter[1].equals("on") && !parameter[2].isEmpty()) {
                                 boolean isEdited = false;
                                 StringBuilder convert = new StringBuilder(parameter[2].toLowerCase());
+                                boolean flag = false;
                                 for(int i = 0; i < convert.length(); i++) {
                                     char selectedSymbol = convert.charAt(i);
                                     if(selectedSymbol > 96 && selectedSymbol < 123) {
@@ -299,6 +368,20 @@ public class PasswdGen extends WindowAdapter {
                                         isEdited = true;
                                         continue;
                                     }
+
+                                    if(exceptSimilarSymbol) {
+                                        for(int j = 0; j < convert.length(); j++) {
+                                            for(int k = 0; k < similarSymbol.length(); k++) {
+                                                if(convert.toString().charAt(j) == similarSymbol.charAt(k)) {
+                                                    flag = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (flag) {
+                                    resultOutput.append("\n" + formatedLogcat("WRN", "비슷한 문자 제외기능이 활성화 되어 있으므로 " + similarSymbol + " 문자들은 비밀번호 조합시 사용하지 않을 예정입니다. "));
                                 }
 
                                 if(isEdited) {
@@ -309,8 +392,12 @@ public class PasswdGen extends WindowAdapter {
 
                                 if(convert.length() == 0) {
                                     throw new NullPointerException("두번째 파라미터에는 특수문자만 제공해야 합니다. ");
-                                } else if (isEdited) {
+                                } else if (isEdited && !flag) {
                                     resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 적합하지 않은 문자를 제외하고 다음 문자만 적용됨: " + exceptUniqueSymbol));
+                                } else if (isEdited && flag) {
+                                    resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 적합하지 않은 문자를 제외하고도 다음 문자가 무시될 수 있음: " + exceptUniqueSymbol));
+                                } else if (!isEdited && flag) {
+                                    resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 다음 문자가 무시될 수 있음: " + exceptUniqueSymbol));
                                 } else {
                                     resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었으며 다음 문자만 표시됨: " + exceptUniqueSymbol));
                                 }
