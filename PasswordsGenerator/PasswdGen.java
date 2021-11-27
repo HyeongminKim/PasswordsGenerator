@@ -15,7 +15,7 @@ public class PasswdGen extends WindowAdapter {
     private Checkbox containCaps, containNum, containUniqueSymbol;
     private Button generate, clear;
     private TextArea resultOutput;
-    private boolean generated, exceptSimilarSymbol;
+    private boolean generated, exceptSimilarSymbol, generalSymbol;
     private String similarSymbol = "1l|Ii!joO0;:9gqxX.,";
 
     public PasswdGen() {
@@ -98,7 +98,7 @@ public class PasswdGen extends WindowAdapter {
                     }
                     break;
                 case 3:
-                    if(unique) {
+                    if(unique && !generalSymbol) {
                         int select = (int)(Math.random() * 4 + 1);
                         char table;
                         boolean flag = false;
@@ -157,6 +157,8 @@ public class PasswdGen extends WindowAdapter {
                                 break;
                         }
                         resultCount++;
+                    } else if(unique && generalSymbol) {
+                        result += '_';
                     }
                     break;
             }
@@ -309,6 +311,7 @@ public class PasswdGen extends WindowAdapter {
                             resultOutput.append("\n" + formatedLogcat("INFO", "도움말" +
                                         "\n\t" + "help - 이 도움말 표시" +
                                         "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외" +
+                                        "\n\t" + "unisym {on/off} - 특수문자 간략화" +
                                         "\n\t" + "clear - 버퍼 청소" +
                                         "\n\t" + "exit - 이 프로그램 종료"
                             ));
@@ -324,6 +327,19 @@ public class PasswdGen extends WindowAdapter {
                             } else {
                                 exceptSimilarSymbol = false;
                                 resultOutput.append("\n" + formatedLogcat("INFO", "비슷한 문자 제외 기능이 비활성화 되었음"));
+                            }
+                            break;
+                        case "unisym":
+                            if(!parameter[1].equals("on") && !parameter[1].equals("off")) {
+                                throw new NullPointerException("Command not found.");
+                            }
+
+                            if(parameter[1].equals("on")) {
+                                generalSymbol = true;
+                                resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 간략화 기능이 활성화 되었음"));
+                            } else {
+                                generalSymbol = false;
+                                resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 간략화 기능이 비활성화 되었음"));
                             }
                             break;
                         case "clear":
