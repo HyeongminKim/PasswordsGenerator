@@ -16,7 +16,6 @@ public class PasswdGen extends WindowAdapter {
     private Button generate, clear;
     private TextArea resultOutput;
     private boolean generated, exceptSimilarSymbol;
-    private String exceptUniqueSymbol;
     private String similarSymbol = "1l|Ii!joO0;:9gqxX.,";
 
     public PasswdGen() {
@@ -310,7 +309,6 @@ public class PasswdGen extends WindowAdapter {
                             resultOutput.append("\n" + formatedLogcat("INFO", "도움말" +
                                         "\n\t" + "help - 이 도움말 표시" +
                                         "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외" +
-                                        "\n\t" + "unisym {on @$%&^*/off} - 특수문자 지정한 문자만 선택" +
                                         "\n\t" + "clear - 버퍼 청소" +
                                         "\n\t" + "exit - 이 프로그램 종료"
                             ));
@@ -326,83 +324,6 @@ public class PasswdGen extends WindowAdapter {
                             } else {
                                 exceptSimilarSymbol = false;
                                 resultOutput.append("\n" + formatedLogcat("INFO", "비슷한 문자 제외 기능이 비활성화 되었음"));
-                            }
-                            break;
-                        case "unisym":
-                            if(!parameter[1].equals("on") && !parameter[1].equals("off")) {
-                                throw new NullPointerException("Command not found.");
-                            }
-
-                            if(parameter[1].equals("off")) {
-                                resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 비활성화 되었음"));
-                                exceptUniqueSymbol = null;
-                            }
-
-                            if(parameter[1].equals("on") && !parameter[2].isEmpty()) {
-                                boolean isEdited = false;
-                                StringBuilder convert = new StringBuilder(parameter[2].toLowerCase());
-                                boolean flag = false;
-                                for(int i = 0; i < convert.length(); i++) {
-                                    char selectedSymbol = convert.charAt(i);
-                                    if(selectedSymbol > 96 && selectedSymbol < 123) {
-                                        convert.deleteCharAt(i);
-                                        i--;
-                                        isEdited = true;
-                                        continue;
-                                    }
-                                    if(selectedSymbol > -1 && selectedSymbol < 33) {
-                                        convert.deleteCharAt(i);
-                                        i--;
-                                        isEdited = true;
-                                        continue;
-                                    }
-                                    if(selectedSymbol > 47 && selectedSymbol < 58) {
-                                        convert.deleteCharAt(i);
-                                        i--;
-                                        isEdited = true;
-                                        continue;
-                                    }
-                                    if(selectedSymbol == 127) {
-                                        convert.deleteCharAt(i);
-                                        i--;
-                                        isEdited = true;
-                                        continue;
-                                    }
-
-                                    if(exceptSimilarSymbol) {
-                                        for(int j = 0; j < convert.length(); j++) {
-                                            for(int k = 0; k < similarSymbol.length(); k++) {
-                                                if(convert.toString().charAt(j) == similarSymbol.charAt(k)) {
-                                                    flag = true;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                if (flag) {
-                                    resultOutput.append("\n" + formatedLogcat("WRN", "비슷한 문자 제외기능이 활성화 되어 있으므로 " + similarSymbol + " 문자들은 비밀번호 조합시 사용하지 않을 예정입니다. "));
-                                }
-
-                                if(isEdited) {
-                                    exceptUniqueSymbol = convert.toString();
-                                } else {
-                                    exceptUniqueSymbol = parameter[2];
-                                }
-
-                                if(convert.length() == 0) {
-                                    throw new NullPointerException("두번째 파라미터에는 특수문자만 제공해야 합니다. ");
-                                } else if (isEdited && !flag) {
-                                    resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 적합하지 않은 문자를 제외하고 다음 문자만 적용됨: " + exceptUniqueSymbol));
-                                } else if (isEdited && flag) {
-                                    resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 적합하지 않은 문자를 제외하고도 다음 문자가 무시될 수 있음: " + exceptUniqueSymbol));
-                                } else if (!isEdited && flag) {
-                                    resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 다음 문자가 무시될 수 있음: " + exceptUniqueSymbol));
-                                } else {
-                                    resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었으며 다음 문자만 표시됨: " + exceptUniqueSymbol));
-                                }
-                            } else if(parameter[1].equals("on") && parameter[2].isEmpty()) {
-                                throw new NullPointerException("The parameter options are ambiguous.");
                             }
                             break;
                         case "clear":
