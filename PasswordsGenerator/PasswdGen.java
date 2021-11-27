@@ -235,9 +235,105 @@ public class PasswdGen extends WindowAdapter {
         cmdInput.getActionMap().put("ENTER", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                //TODO: 이 메소드 완성하기
-                resultOutput.append("\n" + formatedLogcat("INFO", "명령행 이벤트: " + cmdInput.getText()));
-                cmdInput.setText("");
+                try {
+                    String[] parameter = cmdInput.getText().trim().toLowerCase().split(" ");
+                    switch(parameter[0]) {
+                        case "help":
+                            resultOutput.append("\n" + formatedLogcat("INFO", "도움말" +
+                                        "\n\t" + "help - 이 도움말 표시" +
+                                        "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외" +
+                                        "\n\t" + "unisym {on @$%&^*/off} - 특수문자 지정한 문자만 선택" +
+                                        "\n\t" + "clear - 버퍼 청소" +
+                                        "\n\t" + "exit - 이 프로그램 종료"
+                            ));
+                            break;
+                        case "exceptsym":
+                            if(!parameter[1].equals("on") && !parameter[1].equals("off")) {
+                                throw new NullPointerException("Command not found.");
+                            }
+
+                            if(parameter[1].equals("on")) {
+                                exceptSimilarSymbol = true;
+                                resultOutput.append("\n" + formatedLogcat("INFO", "비슷한 문자 제외 기능이 활성화 되었음"));
+                            } else {
+                                exceptSimilarSymbol = false;
+                                resultOutput.append("\n" + formatedLogcat("INFO", "비슷한 문자 제외 기능이 비활성화 되었음"));
+                            }
+                            break;
+                        case "unisym":
+                            if(!parameter[1].equals("on") && !parameter[1].equals("off")) {
+                                throw new NullPointerException("Command not found.");
+                            }
+
+                            if(parameter[1].equals("off")) {
+                                resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 비활성화 되었음"));
+                                exceptUniqueSymbol = null;
+                            }
+
+                            if(parameter[1].equals("on") && !parameter[2].isEmpty()) {
+                                boolean isEdited = false;
+                                StringBuilder convert = new StringBuilder(parameter[2].toLowerCase());
+                                for(int i = 0; i < convert.length(); i++) {
+                                    char selectedSymbol = convert.charAt(i);
+                                    if(selectedSymbol > 96 && selectedSymbol < 123) {
+                                        convert.deleteCharAt(i);
+                                        i--;
+                                        isEdited = true;
+                                        continue;
+                                    }
+                                    if(selectedSymbol > -1 && selectedSymbol < 33) {
+                                        convert.deleteCharAt(i);
+                                        i--;
+                                        isEdited = true;
+                                        continue;
+                                    }
+                                    if(selectedSymbol > 47 && selectedSymbol < 58) {
+                                        convert.deleteCharAt(i);
+                                        i--;
+                                        isEdited = true;
+                                        continue;
+                                    }
+                                    if(selectedSymbol == 127) {
+                                        convert.deleteCharAt(i);
+                                        i--;
+                                        isEdited = true;
+                                        continue;
+                                    }
+                                }
+
+                                if(isEdited) {
+                                    exceptUniqueSymbol = convert.toString();
+                                } else {
+                                    exceptUniqueSymbol = parameter[2];
+                                }
+
+                                if(convert.length() == 0) {
+                                    throw new NullPointerException("두번째 파라미터에는 특수문자만 제공해야 합니다. ");
+                                } else if (isEdited) {
+                                    resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 적합하지 않은 문자를 제외하고 다음 문자만 적용됨: " + exceptUniqueSymbol));
+                                } else {
+                                    resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었으며 다음 문자만 표시됨: " + exceptUniqueSymbol));
+                                }
+                            } else if(parameter[1].equals("on") && parameter[2].isEmpty()) {
+                                throw new NullPointerException("The parameter options are ambiguous.");
+                            }
+                            break;
+                        case "clear":
+                            resultOutput.setText("");
+                            break;
+                        case "":
+                            break;
+                        case "exit":
+                            System.exit(0);
+                            break;
+                        default:
+                            throw new NullPointerException("Command not found.");
+                    }
+                } catch(NullPointerException e) {
+                    resultOutput.append("\n" + formatedLogcat("ERR", cmdInput.getText() + ": 명령어를 실행하는 도중 예외가 발생하였습니다. " + e.toString()));
+                } finally {
+                    cmdInput.setText("");
+                }
             }
         });
     }
