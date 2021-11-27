@@ -1,17 +1,22 @@
 import java.time.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.datatransfer.*;
+
+import javax.swing.*;
 
 public class PasswdGen extends WindowAdapter {
     private Frame frame;
     private Panel header, passCnt, context, action, footer;
     private Label welcomeText, pwdCnt, placeholderText;
     private TextField passwordCount;
+    private JTextField cmdInput;
     private Checkbox containCaps, containNum, containUniqueSymbol;
     private Button generate, clear;
-    private TextArea guideText, resultOutput;
-    private boolean generated;
+    private TextArea resultOutput;
+    private boolean generated, exceptSimilarSymbol;
+    private String exceptUniqueSymbol;
 
     public PasswdGen() {
         init();
@@ -108,7 +113,6 @@ public class PasswdGen extends WindowAdapter {
                 alert.dispose();
             }
         });
-
         
         alert.add("North", msg);
         alert.add("South", submit);
@@ -138,6 +142,7 @@ public class PasswdGen extends WindowAdapter {
         placeholderText = new Label("비밀번호 생성 길이: ");
 
         passwordCount = new TextField("5", 5);
+        cmdInput = new JTextField(20);
 
         containCaps = new Checkbox("대소문자 구분", false);
         containNum  = new Checkbox("숫자 포함", false);
@@ -145,18 +150,6 @@ public class PasswdGen extends WindowAdapter {
 
         generate = new Button("생성");
         clear = new Button("지우기");
-
-        guideText = new TextArea(
-            "--- 무차별 대입공격에 의한 해킹으로부터 계정을 보호하려면 다음 사항에 주의하세요. ---" + "\n"
-            + "- 다수의 계정에 대해 동일하거나 유사한 비밀번호를 사용하지 마세요. " + "\n"
-            + "- 최소 8자리의 비밀번호를 사용하고 숫자, 대소문자, 특수기호를 하나 이상 포함하세요. " + "\n"
-            + "- 비밀번호에 우편번호, 전화번호, 생일 등 의미가 있는 숫자를 사용하지 마세요. " + "\n"
-            + "- 쉽게 추측할 수 있는 비밀번호를 사용하지 마세요. " + "\n"
-            + "- 브라우저나 포스트잇에 저장된 모든 비밀번호는 쉽게 확인할 수 있으니 주의하세요. " + "\n"
-            + "- 공개 Wi-Fi, 무료 VPN, 다른 컴퓨터나 웹 프록시의 연결을 신뢰할 수 없다면 로그인하지 마세요. " + "\n"
-            + "- 가급적 암호화 되지 않은 연결을 통해 민감한 정보를 전송하지 마세요. " + "\n"
-        );
-        guideText.setEditable(false);
 
         resultOutput = new TextArea(formatedLogcat("INFO", "passwdGen 초기화... [" + frame.getTitle() + "] 윈도우 생성됨"));
         resultOutput.setEditable(false);
@@ -175,8 +168,8 @@ public class PasswdGen extends WindowAdapter {
         action.add(clear);
 
         footer.setLayout(new BorderLayout(1, 2));
-        footer.add("North", guideText);
-        footer.add("South", resultOutput);
+        footer.add("North", resultOutput);
+        footer.add("South", cmdInput);
 
         frame.setSize(600, 150);
         frame.setLayout(new BorderLayout(1, 2));
@@ -234,6 +227,17 @@ public class PasswdGen extends WindowAdapter {
                     resultOutput.setText(formatedLogcat("INFO", "클립보드 지우기 완료"));
                     showAlert(frame, frame.getTitle(), "생성된 비밀번호가 클립보드에서 제거되었습니다. 만약 비밀번호가 유실되었을 경우 해당 홈페이지 비밀번호 찾기 기능을 이용하시길 바랍니다. ");;
                 }
+            }
+        });
+
+        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false);
+        cmdInput.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter, "ENTER");
+        cmdInput.getActionMap().put("ENTER", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                //TODO: 이 메소드 완성하기
+                resultOutput.append("\n" + formatedLogcat("INFO", "명령행 이벤트: " + cmdInput.getText()));
+                cmdInput.setText("");
             }
         });
     }
