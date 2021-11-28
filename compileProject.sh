@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo -e "LICENSE: This script is licensed under the MIT License\n"
+echo -e "\033[0;1mLICENSE: This script is licensed under the MIT License\033[m\n"
 
 if [ "$(uname -s)" = "Darwin" ]; then
     pgrep WindowServer > /dev/null 2>&1
@@ -35,7 +35,7 @@ fi
 echo "Compiling PasswdGen.java file..."
 javac PasswdGen.java
 if [ $? != 0 ]; then
-    echo -e "\nThe build seems to have failed. Please check again for syntax errors in the recently edited line."
+    echo -e "\n\033[31mThe build seems to have failed. Please check again for syntax errors in the recently edited line.\033[m"
     exit 2
 fi
 
