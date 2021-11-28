@@ -160,6 +160,7 @@ public class PasswdGen extends WindowAdapter {
                     } else if(unique && generalSymbol) {
                         int select = (int)(Math.random() * exceptUniqueSymbol.length() + 1);
                         result += exceptUniqueSymbol.charAt(select - 1);
+                        resultCount++;
                     }
                     break;
             }
@@ -281,7 +282,7 @@ public class PasswdGen extends WindowAdapter {
                         throw new NumberFormatException("No length value entered.");
                     }
                     String result = generatePassword(frame, Integer.parseInt(passwordCount.getText()), containCaps.getState(), containNum.getState(), containUniqueSymbol.getState());
-                    if (result == null) {
+                    if (result == null || result.length() != Integer.parseInt(passwordCount.getText())) {
                         throw new NullPointerException();
                     }
                     StringSelection selection = new StringSelection(result);
