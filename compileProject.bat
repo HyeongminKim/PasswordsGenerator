@@ -44,6 +44,8 @@ if "%ERRORLEVEL%" == "1" (
 echo Cleanup cache files...
 del *.class
 
+%SystemRoot%\explorer.exe .
+
 echo This window will close automatically after 5 seconds...
 timeout 5 > NUL
 
