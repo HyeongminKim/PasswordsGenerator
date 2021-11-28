@@ -2,8 +2,21 @@
 
 echo [7mLICENSE: This script is licensed under the MIT License[0m
 
+if "'c(mode)'" == "batch" (
+    echo.
+    echo [31mERROR! No GUI detected. This application requires a GUI.[0m
+    exit
+)
+
 echo [1mNOTE: This window closes automatically.[0m
 echo.
+
+where javac > NUL 2>&1
+if "%ERRORLEVEL%" == "1" (
+    echo [31mERROR! This script requires JDK.[0m
+    timeout 10 > NUL
+    exit
+)
 
 if not exist PasswordsGenerator (
     echo [91mFATAL ERROR! This script obviously shouldn't be outside the project.[0m
