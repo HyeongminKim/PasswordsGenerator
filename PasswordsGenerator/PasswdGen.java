@@ -9,7 +9,7 @@ import javax.swing.*;
 public class PasswdGen extends WindowAdapter {
     private Frame frame;
     private Panel header, passCnt, context, action, footer;
-    private Label welcomeText, pwdCnt, placeholderText;
+    private Label welcomeText, pwdCnt, placeholderText, cmdPrompt;
     private TextField passwordCount;
     private JTextField cmdInput;
     private Checkbox containCaps, containNum, containUniqueSymbol;
@@ -220,9 +220,10 @@ public class PasswdGen extends WindowAdapter {
         pwdCnt = new Label("아래 규칙을 설정하여 조건에 맞는 비밀번호를 생성하세요");
 
         placeholderText = new Label("비밀번호 생성 길이: ");
+        cmdPrompt = new Label("> ");
 
         passwordCount = new TextField("5", 5);
-        cmdInput = new JTextField(20);
+        cmdInput = new JTextField(80);
 
         containCaps = new Checkbox("대소문자 구분", false);
         containNum  = new Checkbox("숫자 포함", false);
@@ -250,7 +251,11 @@ public class PasswdGen extends WindowAdapter {
 
         footer.setLayout(new BorderLayout(1, 2));
         footer.add("North", resultOutput);
-        footer.add("South", cmdInput);
+        Panel commandLine = new Panel();
+        commandLine.setLayout(new FlowLayout(FlowLayout.LEFT));
+        commandLine.add(cmdPrompt);
+        commandLine.add(cmdInput);
+        footer.add("South", commandLine);
 
         frame.setSize(600, 150);
         frame.setLayout(new BorderLayout(1, 2));
