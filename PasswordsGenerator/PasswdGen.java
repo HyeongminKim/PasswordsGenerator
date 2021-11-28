@@ -191,9 +191,20 @@ public class PasswdGen extends WindowAdapter {
         alert.setVisible(true);
     }
 
+    private void formatedLogcat(String level, String log, boolean newline) {
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
+        if(newline) {
+            resultOutput.append("\n" + date + " " + time + " [" + level + "]: " + log);
+        } else {
+            resultOutput.append(date + " " + time + " [" + level + "]: " + log);
+        }
+    }
+
     private void formatedLogcat(String level, String log) {
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now();
+
         resultOutput.append("\n" + date + " " + time + " [" + level + "]: " + log);
     }
 
@@ -221,7 +232,7 @@ public class PasswdGen extends WindowAdapter {
         clear = new Button("지우기");
 
         resultOutput = new TextArea();
-        formatedLogcat("INFO", "passwdGen 초기화... [" + frame.getTitle() + "] 윈도우 생성됨");
+        formatedLogcat("INFO", "passwdGen 초기화... [" + frame.getTitle() + "] 윈도우 생성됨", false);
         resultOutput.setEditable(false);
 
         header.add(welcomeText);
@@ -295,7 +306,7 @@ public class PasswdGen extends WindowAdapter {
                     clipboard.setContents(selection, selection);
                     generated = false;
                     resultOutput.setText(null);
-                    formatedLogcat("INFO", "클립보드 지우기 완료");
+                    formatedLogcat("INFO", "클립보드 지우기 완료", false);
                     showAlert(frame, frame.getTitle(), "생성된 비밀번호가 클립보드에서 제거되었습니다. 만약 비밀번호가 유실되었을 경우 해당 홈페이지 비밀번호 찾기 기능을 이용하시길 바랍니다. ");;
                 }
             }
