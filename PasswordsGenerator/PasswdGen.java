@@ -434,6 +434,7 @@ public class PasswdGen extends WindowAdapter {
                                 }
 
                                 if(convert.length() == 0) {
+                                    generalSymbol = false;
                                     throw new NullPointerException("두번째 파라미터에는 특수문자만 제공해야 합니다. ");
                                 } else if (isEdited && !flag) {
                                     formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 적합하지 않은 문자를 제외하고 다음 문자만 적용됨: " + exceptUniqueSymbol);
