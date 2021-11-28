@@ -1,8 +1,10 @@
+import java.net.*;
 import java.time.*;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.datatransfer.*;
+import java.io.IOException;
 
 import javax.swing.*;
 
@@ -13,7 +15,7 @@ public class PasswdGen extends WindowAdapter {
     private TextField passwordCount;
     private JTextField cmdInput;
     private Checkbox containCaps, containNum, containUniqueSymbol;
-    private Button generate, clear;
+    private Button generate, clear, openWeb;
     private TextArea resultOutput;
     private boolean generated, exceptSimilarSymbol, generalSymbol;
     private String similarSymbol = "1l|Ii!joO0;:9gqxX.,", exceptUniqueSymbol = "";
@@ -224,7 +226,7 @@ public class PasswdGen extends WindowAdapter {
         cmdPrompt = new Label("> ");
 
         passwordCount = new TextField("5", 5);
-        cmdInput = new JTextField(80);
+        cmdInput = new JTextField(70);
 
         containCaps = new Checkbox("대소문자 구분", false);
         containNum  = new Checkbox("숫자 포함", false);
@@ -232,6 +234,7 @@ public class PasswdGen extends WindowAdapter {
 
         generate = new Button("생성");
         clear = new Button("지우기");
+        openWeb = new Button("GitHub");
 
         resultOutput = new TextArea();
         formatedLogcat("INFO", "passwdGen 초기화... [" + frame.getTitle() + "] 윈도우 생성됨", false);
@@ -256,6 +259,7 @@ public class PasswdGen extends WindowAdapter {
         commandLine.setLayout(new FlowLayout(FlowLayout.LEFT));
         commandLine.add(cmdPrompt);
         commandLine.add(cmdInput);
+        commandLine.add(openWeb);
         footer.add("South", commandLine);
 
         frame.setSize(600, 150);
@@ -314,6 +318,32 @@ public class PasswdGen extends WindowAdapter {
                     resultOutput.setText(null);
                     formatedLogcat("INFO", "클립보드 지우기 완료", false);
                     showAlert(frame, frame.getTitle(), "생성된 비밀번호가 클립보드에서 제거되었습니다. 만약 비밀번호가 유실되었을 경우 해당 홈페이지 비밀번호 찾기 기능을 이용하시길 바랍니다. ");;
+                }
+            }
+        });
+
+        openWeb.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String url = "https://github.com/HyeongminKim/PasswordsGenerator";
+                try {
+                    if(Desktop.isDesktopSupported()) {
+                        formatedLogcat("INFO", "페이지 열기 데몬: Desktop.browse");
+                        Desktop desktop = Desktop.getDesktop();
+                        desktop.browse(new URI(url));
+                    } else {
+                        Runtime rt = Runtime.getRuntime();
+                        String os = System.getProperty("os.name").toLowerCase();
+                        if(os.indexOf("mac") >= 0) {
+                            formatedLogcat("INFO", "페이지 열기 명령(macOS): open");
+                            rt.exec("open " + url);
+                        } else {
+                            formatedLogcat("INFO", "페이지 열기 명령(Linux): xdg-open");
+                            rt.exec("xdg-open " + url);
+                        }
+                    }
+                } catch(IOException | URISyntaxException exception) {
+                    formatedLogcat("ERR", "페이지를 여는 중 예외 발생: " + exception.toString() + "\n\t수동으로 개발자 홈페이지에 방문해 주세요. " + url);
+                    showAlert(frame, frame.getTitle() + "- 오류", "이 OS는 현재 지원하지 않습니다. 로그캣에 작성된 URL을 복사하여 수동으로 여시기 바랍니다. ");;
                 }
             }
         });
