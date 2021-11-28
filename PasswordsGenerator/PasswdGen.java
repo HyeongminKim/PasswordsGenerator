@@ -316,34 +316,23 @@ public class PasswdGen extends WindowAdapter {
                         resultContainer.add(result[i]);
                     }
 
-                    Button copyPassword = new Button("복사 후 닫기");
-                    copyPassword.addActionListener(new ActionListener() {
+                    Button dismiss = new Button("승인");
+                    dismiss.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent evt) {
                             StringSelection selection = new StringSelection(result[resultContainer.getSelectedIndex()]);
                             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                             clipboard.setContents(selection, selection);
                             generated = true;
-                            formatedLogcat("INFO", "비밀번호 생성 결과창이 비활성화 됨");
-                            resultView.dispose();
-                        }
-                    });
-                    Button dismiss = new Button("닫기");
-                    dismiss.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent evt) {
+                            showAlert(resultView, resultView.getTitle(), "선택한 비밀번호는: " + result[resultContainer.getSelectedIndex()] + " 입니다. 이 비밀번호는 클립보드에 저장되었으므로 스크린 샷을 따로 촬영하지 않아도 됩니다. ");
                             formatedLogcat("INFO", "비밀번호 생성 결과창이 비활성화 됨");
                             resultView.dispose();
                         }
                     });
 
-                    Panel up = new Panel();
-                    Panel down = new Panel();
                     resultView.setLayout(new BorderLayout(1, 2));
-                    down.setLayout(new BorderLayout(1, 2));
-                    up.add(resultContainer);
-                    down.add("West", copyPassword);
-                    down.add("East", dismiss);
-                    resultView.add("North", up);
-                    resultView.add("South", down);
+                    resultView.add("North", resultContainer);
+                    resultView.add("South", dismiss);
+
                     resultView.setSize(300, 200);
                     resultView.pack();
                     resultView.setLocation(50, 50);
