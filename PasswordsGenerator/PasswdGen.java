@@ -309,13 +309,39 @@ public class PasswdGen extends WindowAdapter {
                     String[] parameter = cmdInput.getText().trim().toLowerCase().split(" ");
                     switch(parameter[0]) {
                         case "help":
-                            resultOutput.append("\n" + formatedLogcat("INFO", "도움말" +
-                                        "\n\t" + "help - 이 도움말 표시" +
-                                        "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외" +
-                                        "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화" +
-                                        "\n\t" + "clear - 버퍼 청소" +
-                                        "\n\t" + "exit - 이 프로그램 종료"
-                            ));
+                            if(exceptSimilarSymbol && generalSymbol) {
+                                resultOutput.append("\n" + formatedLogcat("INFO", "도움말" +
+                                            "\n\t" + "help - 이 도움말 표시" +
+                                            "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외 켜짐" +
+                                            "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화 켜짐(" + exceptUniqueSymbol + ")" +
+                                            "\n\t" + "clear - 버퍼 청소" +
+                                            "\n\t" + "exit - 이 프로그램 종료"
+                                ));
+                            } else if(!exceptSimilarSymbol && generalSymbol) {
+                                resultOutput.append("\n" + formatedLogcat("INFO", "도움말" +
+                                            "\n\t" + "help - 이 도움말 표시" +
+                                            "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외 꺼짐" +
+                                            "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화 켜짐(" + exceptUniqueSymbol + ")" +
+                                            "\n\t" + "clear - 버퍼 청소" +
+                                            "\n\t" + "exit - 이 프로그램 종료"
+                                ));
+                            } else if(exceptSimilarSymbol && !generalSymbol) {
+                                resultOutput.append("\n" + formatedLogcat("INFO", "도움말" +
+                                            "\n\t" + "help - 이 도움말 표시" +
+                                            "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외 켜짐" +
+                                            "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화 꺼짐" +
+                                            "\n\t" + "clear - 버퍼 청소" +
+                                            "\n\t" + "exit - 이 프로그램 종료"
+                                ));
+                            } else {
+                                resultOutput.append("\n" + formatedLogcat("INFO", "도움말" +
+                                            "\n\t" + "help - 이 도움말 표시" +
+                                            "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외 꺼짐" +
+                                            "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화 꺼짐" +
+                                            "\n\t" + "clear - 버퍼 청소" +
+                                            "\n\t" + "exit - 이 프로그램 종료"
+                                ));
+                            }
                             break;
                         case "exceptsym":
                             if(!parameter[1].equals("on") && !parameter[1].equals("off")) {
