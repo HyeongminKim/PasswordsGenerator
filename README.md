@@ -28,7 +28,7 @@
 
 ### 문제 해결
 - **컴파일 도구**
-  - `FATAL ERROR!`: 프로젝트 구조가 손상되었습니다. 
+  - `FATAL ERROR!`: 프로젝트 구조가 손상되어 있습니다. 
   - `ERROR! No GUI detected`: GUI가 감지되지 않았습니다. 현재 사용하고 계신 컴퓨터가 GUI를 지원하는지, 또 컴퓨터가 GUI를 지원하지만 시스템이 CLI 기반으로 운영되고 있거나, WSL(aka. Windows Subsystem for Linux)에서 빌드를 시도하진 않았는지 다시 한번 확인하세요. 
   - `ERROR! This script only support...`: 지원하지 않는 OS이거나 컴파일 도구를 잘못 실행했습니다. 
   - `ERROR! This script requires JDK`: 계속 진행하려면 JDK가 있어야 합니다. [여기](https://github.com/HyeongminKim/PasswordsGenerator#%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD)를 참조하세요. 
