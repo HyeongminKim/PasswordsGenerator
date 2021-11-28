@@ -39,7 +39,7 @@ public class PasswdGen extends WindowAdapter {
         }
 
         if(length < 8 || !(caps && num && unique)) {
-            resultOutput.append("\n" + formatedLogcat("WRN", "비밀번호 정책이 규정에 부합하지 않음"));
+            formatedLogcat("WRN", "비밀번호 정책이 규정에 부합하지 않음");
             showAlert(target, frame.getTitle() + "- 경고", "현재 설정된 비밀번호 정책은 대부분의 사이트에서 허용하지 않으며 보안에 치명적이므로 이 비밀번호를 사용하는 것은 권장하지 않습니다. ");
         }
 
@@ -179,7 +179,7 @@ public class PasswdGen extends WindowAdapter {
         Button submit = new Button("승인");
         submit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                resultOutput.append("\n" + formatedLogcat("INFO", "알럿이 비활성화됨: [" + title + "] " + truncate(message, 14)));
+                formatedLogcat("INFO", "알럿이 비활성화됨: [" + title + "] " + truncate(message, 14));
                 alert.dispose();
             }
         });
@@ -187,15 +187,14 @@ public class PasswdGen extends WindowAdapter {
         alert.add("North", msg);
         alert.add("South", submit);
         alert.pack();
-        resultOutput.append("\n" + formatedLogcat("INFO", "알럿이 활성화됨: [" + title + "] " + truncate(message, 14)));
+        formatedLogcat("INFO", "알럿이 활성화됨: [" + title + "] " + truncate(message, 14));
         alert.setVisible(true);
     }
 
-    private String formatedLogcat(String level, String log) {
+    private void formatedLogcat(String level, String log) {
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now();
-        
-        return date + " " + time + " [" + level + "]: " + log;
+        resultOutput.append("\n" + date + " " + time + " [" + level + "]: " + log);
     }
 
     private void init() {
@@ -221,7 +220,8 @@ public class PasswdGen extends WindowAdapter {
         generate = new Button("생성");
         clear = new Button("지우기");
 
-        resultOutput = new TextArea(formatedLogcat("INFO", "passwdGen 초기화... [" + frame.getTitle() + "] 윈도우 생성됨"));
+        resultOutput = new TextArea();
+        formatedLogcat("INFO", "passwdGen 초기화... [" + frame.getTitle() + "] 윈도우 생성됨");
         resultOutput.setEditable(false);
 
         header.add(welcomeText);
@@ -272,13 +272,13 @@ public class PasswdGen extends WindowAdapter {
                     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                     clipboard.setContents(selection, selection);
                     generated = true;
-                    resultOutput.append("\n" + formatedLogcat("INFO", "비밀번호가 성공적으로 생성되었습니다. "));
+                    formatedLogcat("INFO", "비밀번호가 성공적으로 생성되었습니다. ");
                     showAlert(frame, frame.getTitle(), "생성된 비밀번호는: " + result + " 입니다. 이 비밀번호는 클립보드에 이미 저장되었으므로 스크린 샷을 따로 촬영하지 않아도 됩니다. ");
                 } catch(NumberFormatException exception) {
-                    resultOutput.append("\n" + formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "\n\t" + passwordCount.getText() + " (은)는 비밀번호 길이를 생성할 수 있는 올바른 숫자가 아닙니다. "));
+                    formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "\n\t" + passwordCount.getText() + " (은)는 비밀번호 길이를 생성할 수 있는 올바른 숫자가 아닙니다. ");
                     showAlert(frame, frame.getTitle() + "- 오류", "비밀번호 길이 필드에는 자연수만 입력해야 합니다. 비밀번호 길이 필드를 다시 한번 확인하시길 바랍니다. ");
                 } catch(NullPointerException exception) {
-                    resultOutput.append("\n" + formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "\n\t" + "이 예외를 https://github.com/HyeongminKim (@HyeongminKim) 에게 제보하세요. "));
+                    formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "\n\t" + "이 예외를 https://github.com/HyeongminKim (@HyeongminKim) 에게 제보하세요. ");
                     showAlert(frame, frame.getTitle() + "- 오류", "알 수 없는 이유로 비밀번호가 생성되지 않았습니다. 주로 잘못된 규칙을 설정했거나 프로그램 버그로 인해 이 문제가 발생합니다. 설정하신 규칙과 이 메시지를 함께 스크린 샷을 촬영하여 이슈를 제보하여 주세요. ");
                 }
             }
@@ -287,14 +287,15 @@ public class PasswdGen extends WindowAdapter {
         clear.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(!generated) {
-                    resultOutput.append("\n" + formatedLogcat("ERR", "클립보드를 지울 수 없습니다. 먼저 비밀번호를 생성하시길 바랍니다. "));
+                    formatedLogcat("ERR", "클립보드를 지울 수 없습니다. 먼저 비밀번호를 생성하시길 바랍니다. ");
                     showAlert(frame, frame.getTitle() + "- 오류", "비밀번호를 한 번도 생성하지 않았거나 이미 클립보드가 비워진 상태입니다. ");;
                 } else {
                     StringSelection selection = new StringSelection("");
                     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                     clipboard.setContents(selection, selection);
                     generated = false;
-                    resultOutput.setText(formatedLogcat("INFO", "클립보드 지우기 완료"));
+                    resultOutput.setText(null);
+                    formatedLogcat("INFO", "클립보드 지우기 완료");
                     showAlert(frame, frame.getTitle(), "생성된 비밀번호가 클립보드에서 제거되었습니다. 만약 비밀번호가 유실되었을 경우 해당 홈페이지 비밀번호 찾기 기능을 이용하시길 바랍니다. ");;
                 }
             }
@@ -310,37 +311,37 @@ public class PasswdGen extends WindowAdapter {
                     switch(parameter[0]) {
                         case "help":
                             if(exceptSimilarSymbol && generalSymbol) {
-                                resultOutput.append("\n" + formatedLogcat("INFO", "도움말" +
+                                formatedLogcat("INFO", "도움말" +
                                             "\n\t" + "help - 이 도움말 표시" +
                                             "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외 켜짐" +
                                             "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화 켜짐(" + exceptUniqueSymbol + ")" +
                                             "\n\t" + "clear - 버퍼 청소" +
                                             "\n\t" + "exit - 이 프로그램 종료"
-                                ));
+                                );
                             } else if(!exceptSimilarSymbol && generalSymbol) {
-                                resultOutput.append("\n" + formatedLogcat("INFO", "도움말" +
+                                formatedLogcat("INFO", "도움말" +
                                             "\n\t" + "help - 이 도움말 표시" +
                                             "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외 꺼짐" +
                                             "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화 켜짐(" + exceptUniqueSymbol + ")" +
                                             "\n\t" + "clear - 버퍼 청소" +
                                             "\n\t" + "exit - 이 프로그램 종료"
-                                ));
+                                );
                             } else if(exceptSimilarSymbol && !generalSymbol) {
-                                resultOutput.append("\n" + formatedLogcat("INFO", "도움말" +
+                                formatedLogcat("INFO", "도움말" +
                                             "\n\t" + "help - 이 도움말 표시" +
                                             "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외 켜짐" +
                                             "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화 꺼짐" +
                                             "\n\t" + "clear - 버퍼 청소" +
                                             "\n\t" + "exit - 이 프로그램 종료"
-                                ));
+                                );
                             } else {
-                                resultOutput.append("\n" + formatedLogcat("INFO", "도움말" +
+                                formatedLogcat("INFO", "도움말" +
                                             "\n\t" + "help - 이 도움말 표시" +
                                             "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외 꺼짐" +
                                             "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화 꺼짐" +
                                             "\n\t" + "clear - 버퍼 청소" +
                                             "\n\t" + "exit - 이 프로그램 종료"
-                                ));
+                                );
                             }
                             break;
                         case "exceptsym":
@@ -350,10 +351,10 @@ public class PasswdGen extends WindowAdapter {
 
                             if(parameter[1].equals("on")) {
                                 exceptSimilarSymbol = true;
-                                resultOutput.append("\n" + formatedLogcat("INFO", "비슷한 문자 제외 기능이 활성화 되었음"));
+                                formatedLogcat("INFO", "비슷한 문자 제외 기능이 활성화 되었음");
                             } else {
                                 exceptSimilarSymbol = false;
-                                resultOutput.append("\n" + formatedLogcat("INFO", "비슷한 문자 제외 기능이 비활성화 되었음"));
+                                formatedLogcat("INFO", "비슷한 문자 제외 기능이 비활성화 되었음");
                             }
                             break;
                         case "unisym":
@@ -412,7 +413,7 @@ public class PasswdGen extends WindowAdapter {
                                 }
 
                                 if (flag) {
-                                    resultOutput.append("\n" + formatedLogcat("WRN", "비슷한 문자 제외기능이 활성화 되어 있으므로 " + similarSymbol + " 문자들은 비밀번호 조합시 사용하지 않을 예정입니다. "));
+                                    formatedLogcat("WRN", "비슷한 문자 제외기능이 활성화 되어 있으므로 " + similarSymbol + " 문자들은 비밀번호 조합시 사용하지 않을 예정입니다. ");
                                 }
 
                                 if(isEdited) {
@@ -424,13 +425,13 @@ public class PasswdGen extends WindowAdapter {
                                 if(convert.length() == 0) {
                                     throw new NullPointerException("두번째 파라미터에는 특수문자만 제공해야 합니다. ");
                                 } else if (isEdited && !flag) {
-                                    resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 적합하지 않은 문자를 제외하고 다음 문자만 적용됨: " + exceptUniqueSymbol));
+                                    formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 적합하지 않은 문자를 제외하고 다음 문자만 적용됨: " + exceptUniqueSymbol);
                                 } else if (isEdited && flag) {
-                                     resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 적합하지 않은 문자를 제외하고도 다음 문자가 무시될 수 있음: " + exceptUniqueSymbol));
+                                     formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 적합하지 않은 문자를 제외하고도 다음 문자가 무시될 수 있음: " + exceptUniqueSymbol);
                                 } else if (!isEdited && flag) {
-                                    resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 다음 문자가 무시될 수 있음: " + exceptUniqueSymbol));
+                                    formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 다음 문자가 무시될 수 있음: " + exceptUniqueSymbol);
                                 } else {
-                                    resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었으며 다음 문자만 표시됨: " + exceptUniqueSymbol));
+                                    formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었으며 다음 문자만 표시됨: " + exceptUniqueSymbol);
                                 }
                                 generalSymbol = true;
                             } else if(parameter[1].equals("on") && parameter[2].equals("")) {
@@ -438,11 +439,11 @@ public class PasswdGen extends WindowAdapter {
                             } else {
                                 generalSymbol = false;
                                 exceptUniqueSymbol = "";
-                                resultOutput.append("\n" + formatedLogcat("INFO", "특수문자 선별기능이 비활성화 되었음"));
+                                formatedLogcat("INFO", "특수문자 선별기능이 비활성화 되었음");
                             }
                             break;
                         case "clear":
-                            resultOutput.setText("");
+                            resultOutput.setText(null);
                             break;
                         case "":
                             break;
@@ -453,7 +454,7 @@ public class PasswdGen extends WindowAdapter {
                             throw new NullPointerException("Command not found.");
                     }
                 } catch(NullPointerException e) {
-                    resultOutput.append("\n" + formatedLogcat("ERR", cmdInput.getText() + ": 명령어를 실행하는 도중 예외가 발생하였습니다. " + e.toString()));
+                    formatedLogcat("ERR", cmdInput.getText() + ": 명령어를 실행하는 도중 예외가 발생하였습니다. " + e.toString());
                 } finally {
                     cmdInput.setText("");
                 }
