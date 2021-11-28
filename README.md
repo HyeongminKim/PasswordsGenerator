@@ -25,11 +25,5 @@ java -jar passwdGen.jar
 - Windows에서는 인코딩 문제로 화면이 제대로 표시되지 않을 수 있습니다. 이 문제가 발생할 경우 위 스크립트를 사용하여 다시 시도해 봅시다.
 
 ### Demo
-#### macOS
 <img width="758" alt="Screen Shot 2021-11-21 at 0 05 24" src="https://user-images.githubusercontent.com/25660580/142732280-c83b466b-8764-4a0d-bde9-ffd300e81dee.png">
 
-#### Linux
-<img width="758" alt="Capture" src="https://user-images.githubusercontent.com/25660580/142799879-7b302269-7f29-4f27-900f-cdcea1f74827.PNG">
-
-#### Windows
-<img width="758" alt="Capture" src="https://user-images.githubusercontent.com/25660580/142732286-06e0b63a-34bf-4b6c-8020-f3c4ce87e0d0.PNG">
