@@ -15,7 +15,7 @@ public class PasswdGen extends WindowAdapter {
     private TextField passwordCount;
     private JTextField cmdInput;
     private Checkbox containCaps, containNum, containUniqueSymbol;
-    private Button generate, clear, openWeb;
+    private Button generate, clear, donate;
     private TextArea resultOutput;
     private boolean generated, exceptSimilarSymbol, generalSymbol;
     private int createPassword = 1;
@@ -31,6 +31,29 @@ public class PasswdGen extends WindowAdapter {
             return value.substring(0, length - 3) + "...";
         } else {
             return value;
+        }
+    }
+
+    private void openWeb(Frame frame, String url) {
+        try {
+            if(Desktop.isDesktopSupported()) {
+                formatedLogcat("INFO", "페이지 열기 데몬: Desktop.browse");
+                Desktop desktop = Desktop.getDesktop();
+                desktop.browse(new URI(url));
+            } else {
+                Runtime rt = Runtime.getRuntime();
+                String os = System.getProperty("os.name").toLowerCase();
+                if(os.indexOf("mac") >= 0) {
+                    formatedLogcat("INFO", "페이지 열기 명령(macOS): open");
+                    rt.exec("open " + url);
+                } else {
+                    formatedLogcat("INFO", "페이지 열기 명령(Linux): xdg-open");
+                    rt.exec("xdg-open " + url);
+                }
+            }
+        } catch(IOException | URISyntaxException exception) {
+            formatedLogcat("ERR", "페이지를 여는 중 예외 발생: " + exception.toString() + "\n\t수동으로 개발자 홈페이지에 방문해 주세요. " + url);
+            showAlert(frame, frame.getTitle() + "- 오류", "이 OS는 현재 지원하지 않습니다. 로그캣에 작성된 URL을 복사하여 수동으로 여시기 바랍니다. ");;
         }
     }
 
@@ -190,6 +213,7 @@ public class PasswdGen extends WindowAdapter {
 
         alert.add("North", msg);
         alert.add("South", submit);
+        alert.setResizable(false);
         alert.pack();
         formatedLogcat("INFO", "알럿이 활성화됨: [" + title + "] " + truncate(message, 14));
         alert.setVisible(true);
@@ -235,7 +259,7 @@ public class PasswdGen extends WindowAdapter {
 
         generate = new Button("생성");
         clear = new Button("지우기");
-        openWeb = new Button("GitHub");
+        donate = new Button("더보기");
 
         resultOutput = new TextArea();
         formatedLogcat("INFO", "passwdGen 초기화... [" + mainView.getTitle() + "] 윈도우 생성됨", false);
@@ -260,7 +284,7 @@ public class PasswdGen extends WindowAdapter {
         commandLine.setLayout(new FlowLayout(FlowLayout.LEFT));
         commandLine.add(cmdPrompt);
         commandLine.add(cmdInput);
-        commandLine.add(openWeb);
+        commandLine.add(donate);
         footer.add("South", commandLine);
 
         mainView.setSize(600, 150);
@@ -366,29 +390,41 @@ public class PasswdGen extends WindowAdapter {
             }
         });
 
-        openWeb.addActionListener(new ActionListener() {
+        donate.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String url = "https://github.com/HyeongminKim/PasswordsGenerator";
-                try {
-                    if(Desktop.isDesktopSupported()) {
-                        formatedLogcat("INFO", "페이지 열기 데몬: Desktop.browse");
-                        Desktop desktop = Desktop.getDesktop();
-                        desktop.browse(new URI(url));
-                    } else {
-                        Runtime rt = Runtime.getRuntime();
-                        String os = System.getProperty("os.name").toLowerCase();
-                        if(os.indexOf("mac") >= 0) {
-                            formatedLogcat("INFO", "페이지 열기 명령(macOS): open");
-                            rt.exec("open " + url);
-                        } else {
-                            formatedLogcat("INFO", "페이지 열기 명령(Linux): xdg-open");
-                            rt.exec("xdg-open " + url);
-                        }
+                Frame devInfo = new Frame("개발자에 관하여");
+                devInfo.setLayout(new BorderLayout(1, 2));
+                Panel infoZone = new Panel();
+                infoZone.setLayout(new BorderLayout(1, 2));
+                Label devName = new Label("Hyeongmin Kim", Label.CENTER);
+                Button pypl = new Button("Donate with PayPal");
+                Button devSite = new Button("개발자 GitHub 방문");
+                pypl.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        openWeb(devInfo, "https://paypal.me/hmDonate");
                     }
-                } catch(IOException | URISyntaxException exception) {
-                    formatedLogcat("ERR", "페이지를 여는 중 예외 발생: " + exception.toString() + "\n\t수동으로 개발자 홈페이지에 방문해 주세요. " + url);
-                    showAlert(mainView, mainView.getTitle() + "- 오류", "이 OS는 현재 지원하지 않습니다. 로그캣에 작성된 URL을 복사하여 수동으로 여시기 바랍니다. ");;
-                }
+                });
+
+                devSite.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        openWeb(devInfo, "https://github.com/HyeongminKim/PasswordsGenerator");
+                    }
+                });
+                infoZone.add("North", devName);
+                infoZone.add("South", devSite);
+                devInfo.add("West", pypl);
+                devInfo.add("East", infoZone);
+                devInfo.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent arg0) {
+                        formatedLogcat("INFO", "더보기 창이 비활성화 됨");
+                        devInfo.dispose();
+                    }
+                });
+                devInfo.pack();
+                devInfo.setResizable(false);
+                formatedLogcat("INFO", "더보기 창이 활성화 됨");
+                devInfo.setVisible(true);
             }
         });
 

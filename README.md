@@ -1,4 +1,8 @@
 # PasswordsGenerator
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/hmDonate)
+### 제작 동기
+회원 가입시 매우 다양한 비밀번호 규칙으로 인해 비밀번호를 정하는데 시간이 오래걸려 이 프로그램을 제작하게 되었습니다. 
+
 ### 요구사항
 - 프로젝트를 빌드하기 위해 JDK 또는 OpenJDK가 필요합니다. 
 - 이 프로그램은 GUI를 사용하므로 CLI기반 시스템에서는 빌드할 수 없습니다. 
