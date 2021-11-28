@@ -366,6 +366,14 @@ public class PasswdGen extends WindowAdapter {
                                         continue;
                                     }
 
+                                    for(int j = i; j < convert.length(); j++) {
+                                        if(convert.charAt(i) == convert.charAt(j) && i != j) {
+                                            convert.deleteCharAt(j);
+                                            j--;
+                                            isEdited = true;
+                                        } 
+                                    }
+
                                     if(exceptSimilarSymbol) {
                                         for(int j = 0; j < convert.length(); j++) {
                                             for(int k = 0; k < similarSymbol.length(); k++) {
