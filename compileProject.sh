@@ -48,6 +48,7 @@ if [ $? != 0 ]; then
     rm *.class
     exit 2
 fi
+chmod 755 passwdGen.jar
 
 echo "Cleanup cache files..."
 rm *.class

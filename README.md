@@ -15,9 +15,9 @@
     ``` bash
     javac PasswdGen.java
     jar -cmf Manifest.mf passwdGen.jar *.class
+    chmod 755 passwdGen.jar
     ```
-  - macOS: 생성된 jar 파일을 더블 클릭하여 실행하거나 `java -jar passwdGen.jar` 명령어를 사용해서 상세 로그를 얻을 수 있습니다.
-  - Linux: `java -jar passwdGen.jar` 명령어를 사용해서 실행할 수 있습니다.
+  - 생성된 jar 파일을 더블 클릭하여 실행하거나 `java -jar passwdGen.jar` 명령어를 사용해서 상세 로그를 얻을 수 있습니다.
 
 - **Windows**
   - [compileProject.bat](https://github.com/HyeongminKim/PasswordsGenerator/blob/master/compileProject.bat) 스크립트를 사용해서 java 파일을 빌드합니다. 
@@ -39,6 +39,7 @@
   - `ERROR! This script requires JDK`: 계속 진행하려면 JDK가 있어야 합니다. [여기](https://github.com/HyeongminKim/PasswordsGenerator#%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD)를 참조하세요. 
   - `jar file couldn't be created`: 프로그램이 이미 열려있어서 쓰기 권한이 없거나 .class 파일을 찾을 수 없습니다. 
 - **프로그램 에러**
+  - The file passwdGen.jar isn't marked as executable: `chmod 755 passwdGen.jar`를 터미널에서 실행한 후 다시 시도하세요. 
   - 알아볼 수 없는 □ 문자가 표시될 경우 [여기](https://github.com/HyeongminKim/PasswordsGenerator#%EC%A3%BC%EC%9D%98%EC%82%AC%ED%95%AD)를 참조하세요. 
   - 제보를 권장하는 예외가 발생했을 경우 [여기로 제보](https://github.com/HyeongminKim/PasswordsGenerator/issues)해 주세요. 
 
