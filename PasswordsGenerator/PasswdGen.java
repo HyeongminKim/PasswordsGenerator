@@ -19,6 +19,7 @@ public class PasswdGen extends WindowAdapter {
     private Checkbox containCaps, containNum, containUniqueSymbol;
     private Button generate, clear, donate;
     private JTextPane resultOutput;
+    private JScrollPane console;
     private boolean generated, exceptSimilarSymbol, generalSymbol, debugMode;
     private int createPassword = 1;
     private String similarSymbol = "1l|Ii!joO0;:9gqxX.,", exceptUniqueSymbol = "";
@@ -274,6 +275,8 @@ public class PasswdGen extends WindowAdapter {
         }
         try {
             doc.insertAfterEnd(doc.getCharacterElement(doc.getLength()), output);
+            JScrollBar vertical = console.getVerticalScrollBar();
+            vertical.setValue(vertical.getMaximum());
         } catch (BadLocationException | IOException e) {
             e.printStackTrace();
         }
@@ -305,6 +308,8 @@ public class PasswdGen extends WindowAdapter {
                     throw new IOException("This level  " + level + " isn't handled. ");
             }
             doc.insertAfterEnd(doc.getCharacterElement(doc.getLength()), output);
+            JScrollBar vertical = console.getVerticalScrollBar();
+            vertical.setValue(vertical.getMaximum());
         } catch (BadLocationException | IOException e) {
             e.printStackTrace();
         }
@@ -340,6 +345,9 @@ public class PasswdGen extends WindowAdapter {
         formatedLogcat("INFO", "passwdGen 초기화... [" + mainView.getTitle() + "] 윈도우 생성됨", false);
         resultOutput.setEditable(false);
 
+        console = new JScrollPane(resultOutput, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        console.setPreferredSize(new Dimension(200, 250));
+
         header.add(welcomeText);
         header.add(pwdCnt);
 
@@ -354,7 +362,7 @@ public class PasswdGen extends WindowAdapter {
         action.add(clear);
 
         footer.setLayout(new BorderLayout(1, 2));
-        footer.add("North", resultOutput);
+        footer.add("North", console);
         Panel commandLine = new Panel();
         commandLine.setLayout(new FlowLayout(FlowLayout.LEFT));
         commandLine.add(cmdPrompt);
