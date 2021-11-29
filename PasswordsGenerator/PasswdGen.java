@@ -17,7 +17,7 @@ public class PasswdGen extends WindowAdapter {
     private Checkbox containCaps, containNum, containUniqueSymbol;
     private Button generate, clear, donate;
     private TextArea resultOutput;
-    private boolean generated, exceptSimilarSymbol, generalSymbol;
+    private boolean generated, exceptSimilarSymbol, generalSymbol, debugMode;
     private int createPassword = 1;
     private String similarSymbol = "1l|Ii!joO0;:9gqxX.,", exceptUniqueSymbol = "";
 
@@ -222,6 +222,8 @@ public class PasswdGen extends WindowAdapter {
     private void formatedLogcat(String level, String log, boolean newline) {
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now();
+        if(level.equals("INFO") && !debugMode) return;
+
         if(newline) {
             resultOutput.append("\n" + date + " " + time + " [" + level + "]: " + log);
         } else {
@@ -232,6 +234,7 @@ public class PasswdGen extends WindowAdapter {
     private void formatedLogcat(String level, String log) {
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now();
+        if(level.equals("INFO") && !debugMode) return;
 
         resultOutput.append("\n" + date + " " + time + " [" + level + "]: " + log);
     }
@@ -348,7 +351,7 @@ public class PasswdGen extends WindowAdapter {
                             clipboard.setContents(selection, selection);
                             generated = true;
                             showAlert(resultView, resultView.getTitle(), "선택한 비밀번호는: " + result[resultContainer.getSelectedIndex()] + " 입니다. 이 비밀번호는 클립보드에 저장되었으므로 스크린 샷을 따로 촬영하지 않아도 됩니다. ");
-                            formatedLogcat("INFO", "비밀번호 생성 결과창이 비활성화 됨");
+                            formatedLogcat("INFO", resultView.getTitle() + "창이 비활성화 됨");
                             resultView.dispose();
                         }
                     });
@@ -360,7 +363,7 @@ public class PasswdGen extends WindowAdapter {
                     resultView.setSize(300, 200);
                     resultView.pack();
                     resultView.setLocation(50, 50);
-                    formatedLogcat("INFO", "비밀번호 생성 결과창이 활성화 됨");
+                    formatedLogcat("INFO", resultView.getTitle() + "창이 활성화 됨");
                     resultView.setVisible(true);
 
                 } catch(NumberFormatException exception) {
@@ -417,13 +420,13 @@ public class PasswdGen extends WindowAdapter {
                 devInfo.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosing(WindowEvent arg0) {
-                        formatedLogcat("INFO", "더보기 창이 비활성화 됨");
+                        formatedLogcat("INFO", devInfo.getTitle() + "창이 비활성화 됨");
                         devInfo.dispose();
                     }
                 });
                 devInfo.pack();
                 devInfo.setResizable(false);
-                formatedLogcat("INFO", "더보기 창이 활성화 됨");
+                formatedLogcat("INFO", devInfo.getTitle() + "창이 활성화 됨");
                 devInfo.setVisible(true);
             }
         });
@@ -437,39 +440,23 @@ public class PasswdGen extends WindowAdapter {
                     String[] parameter = cmdInput.getText().trim().toLowerCase().split(" ");
                     switch(parameter[0]) {
                         case "help":
-                            if(exceptSimilarSymbol && generalSymbol) {
-                                formatedLogcat("INFO", "도움말" +
+                            if(generalSymbol) {
+                                formatedLogcat("NOTE", "도움말" +
                                             "\n\t" + "help - 이 도움말 표시" +
                                             "\n\t" + "count - 생성할 갯수 (현재 " + createPassword + "개)" +
-                                            "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외 켜짐" +
-                                            "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화 켜짐(" + exceptUniqueSymbol + ")" +
-                                            "\n\t" + "clear - 버퍼 청소" +
-                                            "\n\t" + "exit - 이 프로그램 종료"
-                                );
-                            } else if(!exceptSimilarSymbol && generalSymbol) {
-                                formatedLogcat("INFO", "도움말" +
-                                            "\n\t" + "help - 이 도움말 표시" +
-                                            "\n\t" + "count - 생성할 갯수 (현재 " + createPassword + "개)" +
-                                            "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외 꺼짐" +
-                                            "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화 켜짐(" + exceptUniqueSymbol + ")" +
-                                            "\n\t" + "clear - 버퍼 청소" +
-                                            "\n\t" + "exit - 이 프로그램 종료"
-                                );
-                            } else if(exceptSimilarSymbol && !generalSymbol) {
-                                formatedLogcat("INFO", "도움말" +
-                                            "\n\t" + "help - 이 도움말 표시" +
-                                            "\n\t" + "count - 생성할 갯수 (현재 " + createPassword + "개)" +
-                                            "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외 켜짐" +
-                                            "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화 꺼짐" +
+                                            "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외 (상태: " + exceptSimilarSymbol + ")" +
+                                            "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화 (상태: " + generalSymbol + ", 선택됨: " + exceptUniqueSymbol + ")" +
+                                            "\n\t" + "verbose {on/off} - INFO 로그 표시 (상태: " + debugMode + ")" +
                                             "\n\t" + "clear - 버퍼 청소" +
                                             "\n\t" + "exit - 이 프로그램 종료"
                                 );
                             } else {
-                                formatedLogcat("INFO", "도움말" +
+                                formatedLogcat("NOTE", "도움말" +
                                             "\n\t" + "help - 이 도움말 표시" +
                                             "\n\t" + "count - 생성할 갯수 (현재 " + createPassword + "개)" +
-                                            "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외 꺼짐" +
-                                            "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화 꺼짐" +
+                                            "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외 (상태: " + exceptSimilarSymbol + ")" +
+                                            "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화 (상태: " + generalSymbol + ")" +
+                                            "\n\t" + "verbose {on/off} - INFO 로그 표시 (상태: " + debugMode + ")" +
                                             "\n\t" + "clear - 버퍼 청소" +
                                             "\n\t" + "exit - 이 프로그램 종료"
                                 );
@@ -480,12 +467,25 @@ public class PasswdGen extends WindowAdapter {
                                 int input = Integer.parseInt(parameter[1].trim());
                                 if(input > 0 && input < 17) {
                                     createPassword = input;
-                                    formatedLogcat("INFO", "비밀번호 생성 수가 성공적으로 변경됨");
+                                    formatedLogcat("NOTE", "비밀번호 생성 수가 성공적으로 변경됨");
                                 } else {
                                     throw new NumberFormatException("For input number: " + input);
                                 }
                             } catch (NumberFormatException e) {
                                 formatedLogcat("ERR", "비밀번호 생성 수를 설정하는 중 예외 발생: " + e.toString() + "\n\t" + parameter[1].trim() + " (은)는 비밀번호 생성 수를 설정할 수 있는 올바른 숫자가 아닙니다. ");
+                            }
+                            break;
+                        case "verbose":
+                            if(!parameter[1].equals("on") && !parameter[1].equals("off")) {
+                                throw new NullPointerException("Command not found.");
+                            }
+
+                            if(parameter[1].equals("on")) {
+                                debugMode = true;
+                                formatedLogcat("NOTE", "INFO레벨 로그 표시 기능이 활성화 되었음");
+                            } else {
+                                debugMode = false;
+                                formatedLogcat("NOTE", "INFO레벨 로그 표시 기능이 비활성화 되었음");
                             }
                             break;
                         case "exceptsym":
@@ -495,10 +495,10 @@ public class PasswdGen extends WindowAdapter {
 
                             if(parameter[1].equals("on")) {
                                 exceptSimilarSymbol = true;
-                                formatedLogcat("INFO", "비슷한 문자 제외 기능이 활성화 되었음");
+                                formatedLogcat("NOTE", "비슷한 문자 제외 기능이 활성화 되었음");
                             } else {
                                 exceptSimilarSymbol = false;
-                                formatedLogcat("INFO", "비슷한 문자 제외 기능이 비활성화 되었음");
+                                formatedLogcat("NOTE", "비슷한 문자 제외 기능이 비활성화 되었음");
                             }
                             break;
                         case "unisym":
@@ -571,13 +571,13 @@ public class PasswdGen extends WindowAdapter {
                                     containUniqueSymbol.setLabel("특수문자 포함");
                                     throw new NullPointerException("두번째 파라미터에는 특수문자만 제공해야 합니다. ");
                                 } else if (isEdited && !flag) {
-                                    formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 적합하지 않은 문자를 제외하고 다음 문자만 적용됨: " + exceptUniqueSymbol);
+                                    formatedLogcat("NOTE", "특수문자 선별기능이 활성화 되었지만 적합하지 않은 문자를 제외하고 다음 문자만 적용됨: " + exceptUniqueSymbol);
                                 } else if (isEdited && flag) {
-                                    formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 적합하지 않은 문자를 제외하고도 다음 문자가 무시될 수 있음: " + exceptUniqueSymbol);
+                                    formatedLogcat("NOTE", "특수문자 선별기능이 활성화 되었지만 적합하지 않은 문자를 제외하고도 다음 문자가 무시될 수 있음: " + exceptUniqueSymbol);
                                 } else if (!isEdited && flag) {
-                                    formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었지만 다음 문자가 무시될 수 있음: " + exceptUniqueSymbol);
+                                    formatedLogcat("NOTE", "특수문자 선별기능이 활성화 되었지만 다음 문자가 무시될 수 있음: " + exceptUniqueSymbol);
                                 } else {
-                                    formatedLogcat("INFO", "특수문자 선별기능이 활성화 되었으며 다음 문자만 표시됨: " + exceptUniqueSymbol);
+                                    formatedLogcat("NOTE", "특수문자 선별기능이 활성화 되었으며 다음 문자만 표시됨: " + exceptUniqueSymbol);
                                 }
                                 generalSymbol = true;
                                 containUniqueSymbol.setLabel("일부 특수문자 포함");
@@ -589,7 +589,7 @@ public class PasswdGen extends WindowAdapter {
                                 generalSymbol = false;
                                 exceptUniqueSymbol = "";
                                 containUniqueSymbol.setLabel("특수문자 포함");
-                                formatedLogcat("INFO", "특수문자 선별기능이 비활성화 되었음");
+                                formatedLogcat("NOTE", "특수문자 선별기능이 비활성화 되었음");
                             }
                             break;
                         case "clear":
