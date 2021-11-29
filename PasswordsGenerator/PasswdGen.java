@@ -7,6 +7,8 @@ import java.awt.datatransfer.*;
 import java.io.IOException;
 
 import javax.swing.*;
+import javax.swing.text.*;
+import javax.swing.text.html.*;
 
 public class PasswdGen extends WindowAdapter {
     private Frame mainView, resultView;
@@ -16,7 +18,7 @@ public class PasswdGen extends WindowAdapter {
     private JTextField cmdInput;
     private Checkbox containCaps, containNum, containUniqueSymbol;
     private Button generate, clear, donate;
-    private TextArea resultOutput;
+    private JTextPane resultOutput;
     private boolean generated, exceptSimilarSymbol, generalSymbol, debugMode;
     private int createPassword = 1;
     private String similarSymbol = "1l|Ii!joO0;:9gqxX.,", exceptUniqueSymbol = "";
@@ -52,7 +54,7 @@ public class PasswdGen extends WindowAdapter {
                 }
             }
         } catch(IOException | URISyntaxException exception) {
-            formatedLogcat("ERR", "페이지를 여는 중 예외 발생: " + exception.toString() + "\n\t수동으로 개발자 홈페이지에 방문해 주세요. " + url);
+            formatedLogcat("ERR", "페이지를 여는 중 예외 발생: " + exception.toString() + "<br>&emsp;수동으로 개발자 홈페이지에 방문해 주세요. " + url);
             showAlert(frame, frame.getTitle() + "- 오류", "이 OS는 현재 지원하지 않습니다. 로그캣에 작성된 URL을 복사하여 수동으로 여시기 바랍니다. ");;
         }
     }
@@ -224,10 +226,56 @@ public class PasswdGen extends WindowAdapter {
         LocalTime time = LocalTime.now();
         if(level.equals("INFO") && !debugMode) return;
 
+        HTMLDocument doc = (HTMLDocument) resultOutput.getStyledDocument();
+        String output = "";
+
         if(newline) {
-            resultOutput.append("\n" + date + " " + time + " [" + level + "]: " + log);
+            switch(level) {
+                case "ERR": 
+                    output = "<br><span style=\"color:red;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    break;
+                case "WRN": 
+                    output = "<br><span style=\"color:orange;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    break;
+                case "INFO": 
+                    output = "<br><span style=\"color:gray;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    break;
+                case "NOTE": 
+                    output = "<br><span style=\"color:green;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    break;
+                default:
+                    try {
+                        throw new IOException("This level  " + level + " isn't handled. ");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+            }
         } else {
-            resultOutput.append(date + " " + time + " [" + level + "]: " + log);
+            switch(level) {
+                case "ERR": 
+                    output = "<span style=\"color:red;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    break;
+                case "WRN": 
+                    output = "<span style=\"color:orange;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    break;
+                case "INFO": 
+                    output = "<span style=\"color:gray;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    break;
+                case "NOTE": 
+                    output = "<span style=\"color:green;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    break;
+                default:
+                    try {
+                        throw new IOException("This level  " + level + " isn't handled. ");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+            }
+        }
+        try {
+            doc.insertAfterEnd(doc.getCharacterElement(doc.getLength()), output);
+        } catch (BadLocationException | IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -236,7 +284,30 @@ public class PasswdGen extends WindowAdapter {
         LocalTime time = LocalTime.now();
         if(level.equals("INFO") && !debugMode) return;
 
-        resultOutput.append("\n" + date + " " + time + " [" + level + "]: " + log);
+        HTMLDocument doc = (HTMLDocument) resultOutput.getStyledDocument();
+        String output = "";
+
+        try {
+            switch(level) {
+                case "ERR": 
+                    output = "<br><span style=\"color:red;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    break;
+                case "WRN": 
+                    output = "<br><span style=\"color:orange;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    break;
+                case "INFO": 
+                    output = "<br><span style=\"color:gray;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    break;
+                case "NOTE": 
+                    output = "<br><span style=\"color:green;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    break;
+                default:
+                    throw new IOException("This level  " + level + " isn't handled. ");
+            }
+            doc.insertAfterEnd(doc.getCharacterElement(doc.getLength()), output);
+        } catch (BadLocationException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void init() {
@@ -264,7 +335,8 @@ public class PasswdGen extends WindowAdapter {
         clear = new Button("지우기");
         donate = new Button("더보기");
 
-        resultOutput = new TextArea();
+        resultOutput = new JTextPane();
+        resultOutput.setContentType("text/html");
         formatedLogcat("INFO", "passwdGen 초기화... [" + mainView.getTitle() + "] 윈도우 생성됨", false);
         resultOutput.setEditable(false);
 
@@ -367,10 +439,10 @@ public class PasswdGen extends WindowAdapter {
                     resultView.setVisible(true);
 
                 } catch(NumberFormatException exception) {
-                    formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "\n\t" + passwordCount.getText() + " (은)는 비밀번호 길이를 생성할 수 있는 올바른 숫자가 아닙니다. ");
+                    formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "<br>&emsp;" + passwordCount.getText() + " (은)는 비밀번호 길이를 생성할 수 있는 올바른 숫자가 아닙니다. ");
                     showAlert(mainView, mainView.getTitle() + "- 오류", "비밀번호 길이 필드에는 자연수만 입력해야 합니다. 비밀번호 길이 필드를 다시 한번 확인하시길 바랍니다. ");
                 } catch(NullPointerException exception) {
-                    formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "\n\t" + "이 예외를 https://github.com/HyeongminKim (@HyeongminKim) 에게 제보하세요. ");
+                    formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "<br>&emsp;" + "이 예외를 https://github.com/HyeongminKim (@HyeongminKim) 에게 제보하세요. ");
                     showAlert(mainView, mainView.getTitle() + "- 오류", "알 수 없는 이유로 비밀번호가 생성되지 않았습니다. 주로 잘못된 규칙을 설정했거나 프로그램 버그로 인해 이 문제가 발생합니다. 설정하신 규칙과 이 메시지를 함께 스크린 샷을 촬영하여 이슈를 제보하여 주세요. ");
                 }
             }
@@ -442,23 +514,23 @@ public class PasswdGen extends WindowAdapter {
                         case "help":
                             if(generalSymbol) {
                                 formatedLogcat("NOTE", "도움말" +
-                                            "\n\t" + "help - 이 도움말 표시" +
-                                            "\n\t" + "count - 생성할 갯수 (현재 " + createPassword + "개)" +
-                                            "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외 (상태: " + exceptSimilarSymbol + ")" +
-                                            "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화 (상태: " + generalSymbol + ", 선택됨: " + exceptUniqueSymbol + ")" +
-                                            "\n\t" + "verbose {on/off} - INFO 로그 표시 (상태: " + debugMode + ")" +
-                                            "\n\t" + "clear - 버퍼 청소" +
-                                            "\n\t" + "exit - 이 프로그램 종료"
+                                            "<br>&emsp;" + "help - 이 도움말 표시" +
+                                            "<br>&emsp;" + "count - 생성할 갯수 (현재 " + createPassword + "개)" +
+                                            "<br>&emsp;" + "exceptsym {on/off} - 비슷한 문자 제외 (상태: " + exceptSimilarSymbol + ")" +
+                                            "<br>&emsp;" + "unisym {on @#!$_-/off} - 특수문자 간략화 (상태: " + generalSymbol + ", 선택됨: " + exceptUniqueSymbol + ")" +
+                                            "<br>&emsp;" + "verbose {on/off} - INFO 로그 표시 (상태: " + debugMode + ")" +
+                                            "<br>&emsp;" + "clear - 버퍼 청소" +
+                                            "<br>&emsp;" + "exit - 이 프로그램 종료"
                                 );
                             } else {
                                 formatedLogcat("NOTE", "도움말" +
-                                            "\n\t" + "help - 이 도움말 표시" +
-                                            "\n\t" + "count - 생성할 갯수 (현재 " + createPassword + "개)" +
-                                            "\n\t" + "exceptsym {on/off} - 비슷한 문자 제외 (상태: " + exceptSimilarSymbol + ")" +
-                                            "\n\t" + "unisym {on @#!$_-/off} - 특수문자 간략화 (상태: " + generalSymbol + ")" +
-                                            "\n\t" + "verbose {on/off} - INFO 로그 표시 (상태: " + debugMode + ")" +
-                                            "\n\t" + "clear - 버퍼 청소" +
-                                            "\n\t" + "exit - 이 프로그램 종료"
+                                            "<br>&emsp;" + "help - 이 도움말 표시" +
+                                            "<br>&emsp;" + "count - 생성할 갯수 (현재 " + createPassword + "개)" +
+                                            "<br>&emsp;" + "exceptsym {on/off} - 비슷한 문자 제외 (상태: " + exceptSimilarSymbol + ")" +
+                                            "<br>&emsp;" + "unisym {on @#!$_-/off} - 특수문자 간략화 (상태: " + generalSymbol + ")" +
+                                            "<br>&emsp;" + "verbose {on/off} - INFO 로그 표시 (상태: " + debugMode + ")" +
+                                            "<br>&emsp;" + "clear - 버퍼 청소" +
+                                            "<br>&emsp;" + "exit - 이 프로그램 종료"
                                 );
                             }
                             break;
@@ -472,7 +544,7 @@ public class PasswdGen extends WindowAdapter {
                                     throw new NumberFormatException("For input number: " + input);
                                 }
                             } catch (NumberFormatException e) {
-                                formatedLogcat("ERR", "비밀번호 생성 수를 설정하는 중 예외 발생: " + e.toString() + "\n\t" + parameter[1].trim() + " (은)는 비밀번호 생성 수를 설정할 수 있는 올바른 숫자가 아닙니다. ");
+                                formatedLogcat("ERR", "비밀번호 생성 수를 설정하는 중 예외 발생: " + e.toString() + "<br>&emsp;" + parameter[1].trim() + " (은)는 비밀번호 생성 수를 설정할 수 있는 올바른 숫자가 아닙니다. ");
                             }
                             break;
                         case "verbose":
