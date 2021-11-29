@@ -233,16 +233,16 @@ public class PasswdGen extends WindowAdapter {
         if(newline) {
             switch(level) {
                 case "ERR": 
-                    output = "<br><span style=\"color:red;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    output = "<br><p style=\"color:red;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
                 case "WRN": 
-                    output = "<br><span style=\"color:orange;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    output = "<br><p style=\"color:orange;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
                 case "INFO": 
-                    output = "<br><span style=\"color:gray;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    output = "<br><p style=\"color:gray;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
                 case "NOTE": 
-                    output = "<br><span style=\"color:green;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    output = "<br><p style=\"color:green;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
                 default:
                     try {
@@ -254,16 +254,16 @@ public class PasswdGen extends WindowAdapter {
         } else {
             switch(level) {
                 case "ERR": 
-                    output = "<span style=\"color:red;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    output = "<p style=\"color:red;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
                 case "WRN": 
-                    output = "<span style=\"color:orange;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    output = "<p style=\"color:orange;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
                 case "INFO": 
-                    output = "<span style=\"color:gray;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    output = "<p style=\"color:gray;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
                 case "NOTE": 
-                    output = "<span style=\"color:green;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    output = "<p style=\"color:green;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
                 default:
                     try {
@@ -450,7 +450,7 @@ public class PasswdGen extends WindowAdapter {
                     formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "<br>&emsp;" + passwordCount.getText() + " (은)는 비밀번호 길이를 생성할 수 있는 올바른 숫자가 아닙니다. ");
                     showAlert(mainView, mainView.getTitle() + "- 오류", "비밀번호 길이 필드에는 자연수만 입력해야 합니다. 비밀번호 길이 필드를 다시 한번 확인하시길 바랍니다. ");
                 } catch(NullPointerException exception) {
-                    formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "<br>&emsp;" + "이 예외를 https://github.com/HyeongminKim (@HyeongminKim) 에게 제보하세요. ");
+                    formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "<br>&emsp;" + "이 예외를 <span style=\"color:blue;text-decoration:underline;\">https://github.com/HyeongminKim</span> (@HyeongminKim) 에게 제보하세요. ");
                     showAlert(mainView, mainView.getTitle() + "- 오류", "알 수 없는 이유로 비밀번호가 생성되지 않았습니다. 주로 잘못된 규칙을 설정했거나 프로그램 버그로 인해 이 문제가 발생합니다. 설정하신 규칙과 이 메시지를 함께 스크린 샷을 촬영하여 이슈를 제보하여 주세요. ");
                 }
             }
