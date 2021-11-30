@@ -495,64 +495,80 @@ public class PasswdGen extends WindowAdapter {
         generate.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String[] result = new String[20];
-
                     passwordCount.setText(passwordCount.getText().trim());
                     if (passwordCount.getText().equals("")) {
                         throw new NumberFormatException("No length value entered.");
                     }
-                    for(int i = 0; i < createPassword; i++) {
-                        result[i] = generatePassword(mainView, Integer.parseInt(passwordCount.getText()), containCaps.getState(), containNum.getState(), containUniqueSymbol.getState());
-                        if (result[i] == null) {
-                            throw new NullPointerException("result[" + i + "] can't be null");
-                        } else if (result[i].length() != Integer.parseInt(passwordCount.getText())) {
+
+                    if(createPassword == 1) {
+                        String result = generatePassword(mainView, Integer.parseInt(passwordCount.getText()), containCaps.getState(), containNum.getState(), containUniqueSymbol.getState());
+                        if (result == null) {
+                            throw new NullPointerException("result can't be null");
+                        } else if (result.length() != Integer.parseInt(passwordCount.getText())) {
                             throw new NullPointerException("Password has been generated, but the requirements are not met.");
                         }
+                        formatedLogcat("INFO", "비밀번호가 성공적으로 생성되었습니다. ");
+
+                        StringSelection selection = new StringSelection(result);
+                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                        clipboard.setContents(selection, selection);
+                        generated = true;
+                        showAlert(mainView, mainView.getTitle(), "생성된 비밀번호는: " + result + " 입니다. 이 비밀번호는 이미 클립보드에 저장되었으므로 스크린 샷을 따로 촬영하지 않아도 됩니다. ");
+                    } else {
+                        String[] result = new String[20];
+                        for(int i = 0; i < createPassword; i++) {
+                            result[i] = generatePassword(mainView, Integer.parseInt(passwordCount.getText()), containCaps.getState(), containNum.getState(), containUniqueSymbol.getState());
+                            if (result[i] == null) {
+                                throw new NullPointerException("result[" + i + "] can't be null");
+                            } else if (result[i].length() != Integer.parseInt(passwordCount.getText())) {
+                                throw new NullPointerException("Password has been generated, but the requirements are not met.");
+                            }
+                        }
+                        formatedLogcat("INFO", "비밀번호가 성공적으로 생성되었습니다. ");
+
+                        resultView = new Frame("비밀번호 생성 결과");
+                        Choice resultContainer = new Choice();
+                        resultContainer.addItemListener(new ItemListener() {
+                            public void itemStateChanged(ItemEvent e) {
+                                resultContainer.repaint();
+                            }
+
+                            public void paint(Graphics g) {
+                                resultContainer.paint(g);
+                                g.setColor(Color.BLUE);
+                                String msg = "비밀번호 선택";
+                                msg += resultContainer.getSelectedItem();
+                                g.drawString(msg, 30, 120);
+                            }
+                        });
+
+                        for(int i = 0; i < createPassword; i++) {
+                            resultContainer.add(result[i]);
+                        }
+
+                        Button dismiss = new Button("승인");
+                        dismiss.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent evt) {
+                                StringSelection selection = new StringSelection(result[resultContainer.getSelectedIndex()]);
+                                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                                clipboard.setContents(selection, selection);
+                                generated = true;
+                                showAlert(resultView, resultView.getTitle(), "선택한 비밀번호는: " + result[resultContainer.getSelectedIndex()] + " 입니다. 이 비밀번호는 클립보드에 저장되었으므로 스크린 샷을 따로 촬영하지 않아도 됩니다. ");
+                                formatedLogcat("INFO", resultView.getTitle() + "창이 비활성화 됨");
+                                resultView.dispose();
+                            }
+                        });
+
+                        resultView.setLayout(new BorderLayout(1, 2));
+                        resultView.add("North", resultContainer);
+                        resultView.add("South", dismiss);
+
+                        resultView.setSize(300, 200);
+                        resultView.pack();
+                        resultView.setLocation(50, 50);
+                        formatedLogcat("INFO", resultView.getTitle() + "창이 활성화 됨");
+                        resultView.setVisible(true);
                     }
-                    formatedLogcat("INFO", "비밀번호가 성공적으로 생성되었습니다. ");
-
-                    resultView = new Frame("비밀번호 생성 결과");
-                    Choice resultContainer = new Choice();
-                    resultContainer.addItemListener(new ItemListener() {
-                        public void itemStateChanged(ItemEvent e) {
-                            resultContainer.repaint();
-                        }
-
-                        public void paint(Graphics g) {
-                            resultContainer.paint(g);
-                            g.setColor(Color.BLUE);
-                            String msg = "비밀번호 선택";
-                            msg += resultContainer.getSelectedItem();
-                            g.drawString(msg, 30, 120);
-                        }
-                    });
-
-                    for(int i = 0; i < createPassword; i++) {
-                        resultContainer.add(result[i]);
-                    }
-
-                    Button dismiss = new Button("승인");
-                    dismiss.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent evt) {
-                            StringSelection selection = new StringSelection(result[resultContainer.getSelectedIndex()]);
-                            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                            clipboard.setContents(selection, selection);
-                            generated = true;
-                            showAlert(resultView, resultView.getTitle(), "선택한 비밀번호는: " + result[resultContainer.getSelectedIndex()] + " 입니다. 이 비밀번호는 클립보드에 저장되었으므로 스크린 샷을 따로 촬영하지 않아도 됩니다. ");
-                            formatedLogcat("INFO", resultView.getTitle() + "창이 비활성화 됨");
-                            resultView.dispose();
-                        }
-                    });
-
-                    resultView.setLayout(new BorderLayout(1, 2));
-                    resultView.add("North", resultContainer);
-                    resultView.add("South", dismiss);
-
-                    resultView.setSize(300, 200);
-                    resultView.pack();
-                    resultView.setLocation(50, 50);
-                    formatedLogcat("INFO", resultView.getTitle() + "창이 활성화 됨");
-                    resultView.setVisible(true);
 
                 } catch(NumberFormatException exception) {
                     formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "<br>&emsp;" + passwordCount.getText() + " (은)는 비밀번호 길이를 생성할 수 있는 올바른 숫자가 아닙니다. ");
