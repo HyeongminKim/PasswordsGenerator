@@ -554,6 +554,7 @@ public class PasswdGen extends WindowAdapter {
                                 clipboard.setContents(selection, selection);
                                 generated = true;
                                 showAlert(resultView, resultView.getTitle(), "선택한 비밀번호는: " + result[resultContainer.getSelectedIndex()] + " 입니다. 이 비밀번호는 클립보드에 저장되었으므로 스크린 샷을 따로 촬영하지 않아도 됩니다. ");
+                                mainView.setEnabled(true);
                                 formatedLogcat("INFO", resultView.getTitle() + "창이 비활성화 됨");
                                 resultView.dispose();
                             }
@@ -564,9 +565,12 @@ public class PasswdGen extends WindowAdapter {
                         resultView.add("South", dismiss);
 
                         resultView.setSize(300, 200);
+                        resultView.setResizable(false);
                         resultView.pack();
                         resultView.setLocation(50, 50);
                         formatedLogcat("INFO", resultView.getTitle() + "창이 활성화 됨");
+                        mainView.setEnabled(false);
+                        resultView.setAlwaysOnTop(true);
                         resultView.setVisible(true);
                     }
 
@@ -630,6 +634,7 @@ public class PasswdGen extends WindowAdapter {
                 devInfo.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosing(WindowEvent arg0) {
+                        mainView.setEnabled(true);
                         formatedLogcat("INFO", devInfo.getTitle() + "창이 비활성화 됨");
                         devInfo.dispose();
                     }
@@ -637,6 +642,8 @@ public class PasswdGen extends WindowAdapter {
                 devInfo.pack();
                 devInfo.setResizable(false);
                 formatedLogcat("INFO", devInfo.getTitle() + "창이 활성화 됨");
+                mainView.setEnabled(false);
+                devInfo.setAlwaysOnTop(true);
                 devInfo.setVisible(true);
             }
         });
