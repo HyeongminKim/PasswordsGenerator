@@ -15,10 +15,9 @@ public class PasswdGen extends WindowAdapter {
     private Panel header, passCnt, context, action, footer;
     private Label welcomeText, pwdCnt, placeholderText, cmdPrompt;
     private TextField passwordCount;
-    private JTextField cmdInput;
     private Checkbox containCaps, containNum, containUniqueSymbol;
     private Button generate, clear, donate;
-    private JTextPane resultOutput;
+    private JTextPane resultOutput, cmdInput;
     private JScrollPane console;
     private boolean generated, exceptSimilarSymbol, generalSymbol, debugMode;
     private int createPassword = 1;
@@ -330,7 +329,8 @@ public class PasswdGen extends WindowAdapter {
         cmdPrompt = new Label("> ");
 
         passwordCount = new TextField("5", 5);
-        cmdInput = new JTextField(70);
+        cmdInput = new JTextPane();
+        cmdInput.setPreferredSize(new Dimension(700, 20));
 
         containCaps = new Checkbox("대소문자 구분", false);
         containNum  = new Checkbox("숫자 포함", false);
@@ -511,8 +511,8 @@ public class PasswdGen extends WindowAdapter {
             }
         });
 
-        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false);
-        cmdInput.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter, "ENTER");
+        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+        cmdInput.getInputMap(JComponent.WHEN_FOCUSED).put(enter, "ENTER");
         cmdInput.getActionMap().put("ENTER", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
