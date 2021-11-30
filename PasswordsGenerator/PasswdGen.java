@@ -241,7 +241,7 @@ public class PasswdGen extends WindowAdapter {
                     output = "<br><p style=\"color:gray;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
                 case "NOTE": 
-                    output = "<br><p style=\"color:green;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
+                    output = "<br><p style=\"color:black;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
                 default:
                     try {
@@ -262,7 +262,7 @@ public class PasswdGen extends WindowAdapter {
                     output = "<p style=\"color:gray;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
                 case "NOTE": 
-                    output = "<p style=\"color:green;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
+                    output = "<p style=\"color:black;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
                 default:
                     try {
@@ -301,7 +301,7 @@ public class PasswdGen extends WindowAdapter {
                     output = "<br><span style=\"color:gray;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
                     break;
                 case "NOTE": 
-                    output = "<br><span style=\"color:green;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
+                    output = "<br><span style=\"color:black;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
                     break;
                 default:
                     throw new IOException("This level  " + level + " isn't handled. ");
@@ -312,6 +312,25 @@ public class PasswdGen extends WindowAdapter {
         } catch (BadLocationException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private int findEOL(String text, int index) {
+        while(--index >= 0) {
+            if(String.valueOf(text.charAt(index)).matches("\\W")) {
+                break;
+            }
+        }
+        return index;
+    }
+
+    private int findSOL(String text, int index) {
+        while (index < text.length()) {
+            if(String.valueOf(text.charAt(index)).matches("\\W")) {
+                break;
+            }
+            index++;
+        }
+        return index;
     }
 
     private void init() {
@@ -329,12 +348,91 @@ public class PasswdGen extends WindowAdapter {
         cmdPrompt = new Label("> ");
 
         passwordCount = new TextField("5", 5);
+        StyleContext cont = StyleContext.getDefaultStyleContext();
+        AttributeSet syntaxError = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.RED);
+        AttributeSet cmdKeyword = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.GREEN);
+        AttributeSet number = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.BLUE);
+        AttributeSet toggleKeyword = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.ORANGE);
         cmdInput = new JTextPane(new DefaultStyledDocument() {
             public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
                 if((getLength() + str.length()) <= 70) {
                     super.insertString(offs, str, a);
+
+                    String text = getText(0, getLength());
+                    int before = findEOL(text, offs);
+                    if(before < 0) before = 0;
+                    int after = findSOL(text, offs + str.length());
+                    int wordL = before;
+                    int wordR = before;
+
+                    while(wordR <= after) {
+                        if(wordR == after || String.valueOf(text.charAt(wordR)).matches("\\W")) {
+                            String intellisense = text.substring(wordL, wordR);
+                            switch(intellisense) {
+                                case "help":
+                                case "count":
+                                case "exceptsym":
+                                case "unisym":
+                                case "verbose":
+                                case "clear":
+                                case "exit": 
+                                    setCharacterAttributes(wordL, wordR - wordL, cmdKeyword, false); 
+                                    break;
+                                case " on":
+                                case " off": 
+                                    setCharacterAttributes(wordL, wordR - wordL, toggleKeyword, false); 
+                                    break;
+                                case " 1":case " 2":case " 3":case " 4":
+                                case " 5":case " 6":case " 7":case " 8":
+                                case " 9":case " 10":case " 11":case " 12":
+                                case " 13":case " 14":case " 15":case " 16":
+                                    setCharacterAttributes(wordL, wordR - wordL, number, false); 
+                                    break;
+                                default: 
+                                    setCharacterAttributes(wordL, wordR - wordL, syntaxError, false); 
+                                    break;
+                            }
+                            wordL = wordR;
+                        }
+                        wordR++;
+                    }
                 } else {
                     Toolkit.getDefaultToolkit().beep();
+                }
+            }
+
+            public void remove(int offs, int len) throws BadLocationException {
+                super.remove(offs, len);
+
+                String text = getText(0, getLength());
+                int before = findEOL(text, offs);
+                if(before < 0) before = 0;
+                int after = findSOL(text, offs);
+
+                String intellisense = text.substring(before, after);
+                switch(intellisense) {
+                    case "help":
+                    case "count":
+                    case "exceptsym":
+                    case "unisym":
+                    case "verbose":
+                    case "clear":
+                    case "exit": 
+                        setCharacterAttributes(before, after - before, cmdKeyword, false); 
+                        break;
+                    case " on":
+                    case " off": 
+                        setCharacterAttributes(before, after - before, toggleKeyword, false); 
+                        break;
+                    case " 1":case " 2":case " 3":case " 4":
+                    case " 5":case " 6":case " 7":case " 8":
+                    case " 9":case " 10":case " 11":case " 12":
+                    case " 13":case " 14":case " 15":case " 16":
+                        setCharacterAttributes(before, after - before, number, false); 
+                        break;
+                    default: 
+                        setCharacterAttributes(before, after - before, syntaxError, false); 
+                        break;
                 }
             }
         });
