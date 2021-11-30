@@ -329,7 +329,15 @@ public class PasswdGen extends WindowAdapter {
         cmdPrompt = new Label("> ");
 
         passwordCount = new TextField("5", 5);
-        cmdInput = new JTextPane();
+        cmdInput = new JTextPane(new DefaultStyledDocument() {
+            public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+                if((getLength() + str.length()) <= 70) {
+                    super.insertString(offs, str, a);
+                } else {
+                    Toolkit.getDefaultToolkit().beep();
+                }
+            }
+        });
         cmdInput.setPreferredSize(new Dimension(700, 20));
 
         containCaps = new Checkbox("대소문자 구분", false);
