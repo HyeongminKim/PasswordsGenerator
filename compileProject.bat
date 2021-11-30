@@ -57,7 +57,11 @@ if "%ERRORLEVEL%" == "1" (
 echo Cleanup cache files...
 del *.class
 
-%SystemRoot%\explorer.exe .
+if "%DISABLE_OPEN_FOLDER%" == "TRUE" (
+    echo [1mNOTE: The Open Working Directory feature is currently disabled.[0m
+) else (
+    %SystemRoot%\explorer.exe .
+)
 
 echo [1mThis window will close automatically after 5 seconds...[0m
 timeout 5 > NUL
