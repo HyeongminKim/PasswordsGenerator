@@ -405,8 +405,10 @@ public class PasswdGen extends WindowAdapter {
                     }
                     for(int i = 0; i < createPassword; i++) {
                         result[i] = generatePassword(mainView, Integer.parseInt(passwordCount.getText()), containCaps.getState(), containNum.getState(), containUniqueSymbol.getState());
-                        if (result[i] == null || result[i].length() != Integer.parseInt(passwordCount.getText())) {
-                            throw new NullPointerException();
+                        if (result[i] == null) {
+                            throw new NullPointerException("result[" + i + "] can't be null");
+                        } else if (result[i].length() != Integer.parseInt(passwordCount.getText())) {
+                            throw new NullPointerException("Password has been generated, but the requirements are not met.");
                         }
                     }
                     formatedLogcat("INFO", "비밀번호가 성공적으로 생성되었습니다. ");
@@ -458,8 +460,14 @@ public class PasswdGen extends WindowAdapter {
                     formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "<br>&emsp;" + passwordCount.getText() + " (은)는 비밀번호 길이를 생성할 수 있는 올바른 숫자가 아닙니다. ");
                     showAlert(mainView, mainView.getTitle() + "- 오류", "비밀번호 길이 필드에는 자연수만 입력해야 합니다. 비밀번호 길이 필드를 다시 한번 확인하시길 바랍니다. ");
                 } catch(NullPointerException exception) {
-                    formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "<br>&emsp;" + "이 예외를 <span style=\"color:blue;text-decoration:underline;\">https://github.com/HyeongminKim</span> (@HyeongminKim) 에게 제보하세요. ");
-                    showAlert(mainView, mainView.getTitle() + "- 오류", "알 수 없는 이유로 비밀번호가 생성되지 않았습니다. 주로 잘못된 규칙을 설정했거나 프로그램 버그로 인해 이 문제가 발생합니다. 설정하신 규칙과 이 메시지를 함께 스크린 샷을 촬영하여 이슈를 제보하여 주세요. ");
+                    formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "<br>&emsp;" + "이 예외를 <span style=\"color:blue;text-decoration:underline;\">https://github.com/HyeongminKim</span> (@HyeongminKim) 에게 제보하세요."
+                            + "<br><&emsp;생성 길이: " + passwordCount.getText() + 
+                              "<br><&emsp;생성 갯수: " + createPassword + 
+                              "<br><&emsp;생성됨: " + generated + 
+                              "<br><&emsp;옵션: containCaps(" + containCaps.getState() + "), containNum(" + containNum.getState() + "), containUniqueSymbol(" + containUniqueSymbol.getState() + ")" +
+                              "<br><&emsp;세부 옵션: exceptsym(" + exceptSimilarSymbol + "), unisym(" + generalSymbol + ", " + exceptUniqueSymbol + "), verbose(" + debugMode + ")"
+                        );
+                    showAlert(mainView, mainView.getTitle() + "- 오류", "알 수 없는 이유로 비밀번호가 생성되지 않았습니다. 주로 잘못된 규칙을 설정했거나 프로그램 버그로 인해 이 문제가 발생합니다. 캡쳐도구로 로그캣과 알럿창을 함께 캡쳐하여 이슈를 제보하여 주세요. ");
                 }
             }
         });
