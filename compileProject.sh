@@ -53,7 +53,7 @@ chmod 755 passwdGen.jar
 echo "Cleanup cache files..."
 rm *.class
 
-if [ "$DISABLE_OPEN_DIRECTORY" == "true" ]; then
+if [ "$DISABLE_OPEN_DIRECTORY" != "true" ]; then
     if [ "$(uname -s)" == "Darwin" ]; then
         open .
     else
