@@ -513,7 +513,11 @@ public class PasswdGen extends WindowAdapter {
                         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                         clipboard.setContents(selection, selection);
                         generated = true;
-                        showAlert(mainView, mainView.getTitle(), "생성된 비밀번호는: " + result + " 입니다. 이 비밀번호는 이미 클립보드에 저장되었으므로 스크린 샷을 따로 촬영하지 않아도 됩니다. ");
+                        if(result.length() > 20) {
+                            showAlert(mainView, mainView.getTitle(), "생성된 비밀번호가 클립보드에 저장되었으므로 이제 비밀번호 필드에 붙여넣기만 하면 됩니다. ");
+                        } else {
+                            showAlert(mainView, mainView.getTitle(), "생성된 비밀번호는: " + result + " 입니다. 이 비밀번호는 이미 클립보드에 저장되었으므로 스크린 샷을 따로 촬영하지 않아도 됩니다. ");
+                        }
                     } else {
                         String[] result = new String[20];
                         for(int i = 0; i < createPassword; i++) {
@@ -553,7 +557,11 @@ public class PasswdGen extends WindowAdapter {
                                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                                 clipboard.setContents(selection, selection);
                                 generated = true;
-                                showAlert(resultView, resultView.getTitle(), "선택한 비밀번호는: " + result[resultContainer.getSelectedIndex()] + " 입니다. 이 비밀번호는 클립보드에 저장되었으므로 스크린 샷을 따로 촬영하지 않아도 됩니다. ");
+                                if(result[resultContainer.getSelectedIndex()].length() > 20) {
+                                    showAlert(mainView, mainView.getTitle(), "선택한 비밀번호가 클립보드에 저장되었으므로 이제 비밀번호 필드에 붙여넣기만 하면 됩니다. ");
+                                } else {
+                                    showAlert(resultView, resultView.getTitle(), "선택한 비밀번호는: " + result[resultContainer.getSelectedIndex()] + " 입니다. 이 비밀번호는 클립보드에 저장되었으므로 스크린 샷을 따로 촬영하지 않아도 됩니다. ");
+                                }
                                 mainView.setEnabled(true);
                                 formatedLogcat("INFO", resultView.getTitle() + "창이 비활성화 됨");
                                 resultView.dispose();
