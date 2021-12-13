@@ -24,8 +24,13 @@ public class PasswdGen extends WindowAdapter {
     private String similarSymbol = "1l|Ii!joO0;:9gqxX.,", exceptUniqueSymbol = "";
 
     public PasswdGen() {
-        init();
-        setAction();
+        if(GraphicsEnvironment.isHeadless()) {
+            System.err.println("아직 GUI가 없는 환경은 지원하지 않습니다. ");
+            System.exit(1);
+        } else {
+            init();
+            setAction();
+        }
     }
 
     private String truncate(String value, int length) {
