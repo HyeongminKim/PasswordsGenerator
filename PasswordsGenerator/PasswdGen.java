@@ -278,6 +278,7 @@ public class PasswdGen extends WindowAdapter {
             vertical.setValue(vertical.getMaximum());
         } catch (BadLocationException | IOException e) {
             e.printStackTrace();
+            System.out.println(output);
         }
     }
 
@@ -311,6 +312,7 @@ public class PasswdGen extends WindowAdapter {
             vertical.setValue(vertical.getMaximum());
         } catch (BadLocationException | IOException e) {
             e.printStackTrace();
+            System.out.println(output);
         }
     }
 
