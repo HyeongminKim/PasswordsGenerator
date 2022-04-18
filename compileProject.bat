@@ -1,4 +1,5 @@
 @ECHO OFF
+chcp 65001 >NUL
 
 echo [7mLICENSE: This script is licensed under the MIT License[0m
 
@@ -26,7 +27,6 @@ if not exist PasswordsGenerator (
     exit
 )
 
-chcp 65001
 cd PasswordsGenerator
 echo Compiling PasswdGen.java file...
 
