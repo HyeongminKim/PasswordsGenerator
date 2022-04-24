@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo -e "\033[0;1mLICENSE: This script is licensed under the MIT License\033[m\n"
+echo -e "\033[7mLICENSE: This script is licensed under the MIT License\033[m\n"
 
 if [ "$(uname -s)" = "Darwin" ]; then
     pgrep WindowServer > /dev/null 2>&1
@@ -59,5 +59,7 @@ if [ "$DISABLE_OPEN_DIRECTORY" != "true" ]; then
     else
         xdg-open .
     fi
+else
+    echo "NOTE: The Open Working Directory feature is currently disabled."
 fi
 
