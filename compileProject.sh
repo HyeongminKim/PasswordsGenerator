@@ -13,6 +13,17 @@ elif [ "$(uname -s)" = "Linux" ]; then
     if [ $? != 0 ]; then
         echo -e "\033[31mERROR! No GUI detected. This application requires a GUI. \033[m"
         exit 3
+    else
+        which systemctl &> /dev/null
+        if [ $? == 0 ]; then
+            if [ "$(systemctl get-default)" == "multi-user.target" ]; then
+                echo -e "\033[31mERROR! No GUI detected. This application requires a GUI. \033[m"
+                exit 3
+            fi
+        else
+            echo -e "\033[33mWARNING! Not a known Linux distribution. This may result in incorrect executables being created.\033[m"
+            echo "Please report the following information to the issue: $(uname -srvmpio)"
+        fi
     fi
 else
     echo -e "\033[31mERROR! This script only support macOS or Linux.\033[m"
