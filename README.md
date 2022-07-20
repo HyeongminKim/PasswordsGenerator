@@ -1,5 +1,8 @@
 # PasswordsGenerator
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/hmDonate)
+## 이 브랜치는 코드 최적화를 위해 임시로 만들었습니다.
+- refactor 브랜치를 사용하여 예기치 않은 동작이 발생할 경우 책임지지 않습니다.
+- 모든 정리가 끝나면, 추후 master 브랜치로 병합될 예정입니다.
 ### 제작 동기 및 사용방법
 - 회원 가입시 매우 다양한 비밀번호 규칙으로 인해 비밀번호를 정하는데 시간이 오래걸려 이 프로그램을 제작하게 되었습니다.
 - 하단 프롬프트에 `help` 를 입력하면 사용가능한 명령을 표시해 줍니다.
