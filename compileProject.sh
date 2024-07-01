@@ -36,6 +36,15 @@ if [ $? != 0 ]; then
     exit 1
 fi
 
+java_version=$(java --version | head -n 1 | awk '{ print $2 }')
+javac_version=$(javac --version | awk '{ print $2 }')
+if [ "$java_version" != "$javac_version" ]; then
+    echo -e "\033[31mERROR! JDK($javac_version) and JVM($java_version) versions are mis-metch.\033[m"
+    exit 1
+else
+    echo "Build passwdGen with JDK $javac_version..."
+fi
+
 cd PasswordsGenerator 2>/dev/null
 if [ $? != 0 ]; then
     echo -e "\033[31mFATAL ERROR! This script obviously shouldn't be outside the project."
