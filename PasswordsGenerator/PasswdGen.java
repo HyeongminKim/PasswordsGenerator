@@ -66,6 +66,7 @@ public class PasswdGen extends WindowAdapter {
 
     private String generatePassword(Frame target, int length, boolean caps, boolean num, boolean unique) throws NumberFormatException {
         String result = "";
+        char previousChar = 0;
 
         if(length <= 0 || length > 256) {
             throw new NumberFormatException("For input number: " + length);
@@ -87,6 +88,7 @@ public class PasswdGen extends WindowAdapter {
                         int select = (int)(Math.random() * 2 + 1);
                         char table = select == 1 ? (char)(Math.random() * 26 + 65) : (char)(Math.random() * 26 + 97);
                         boolean flag = false;
+                        if(table == previousChar) continue;
                         if(exceptSimilarSymbol) {
                             for(int i = 0; i < similarSymbol.length(); i++) {
                                 if(similarSymbol.charAt(i) == table) {
@@ -96,10 +98,12 @@ public class PasswdGen extends WindowAdapter {
                             }
                             if(flag) continue;
                         }
+                        previousChar = table;
                         result += table;
                     } else {
                         char table = (char)(Math.random() * 26 + 97);
                         boolean flag = false;
+                        if(table == previousChar) continue;
                         if(exceptSimilarSymbol) {
                             for(int i = 0; i < similarSymbol.length(); i++) {
                                 if(similarSymbol.charAt(i) == table) {
@@ -109,6 +113,7 @@ public class PasswdGen extends WindowAdapter {
                             }
                             if(flag) continue;
                         }
+                        previousChar = table;
                         result += table;
                     }
                     resultCount++;
@@ -117,6 +122,7 @@ public class PasswdGen extends WindowAdapter {
                     if(num) {
                         char table = (char)(Math.random() * 10 + 48);
                         boolean flag = false;
+                        if(table == previousChar) continue;
                         if(exceptSimilarSymbol) {
                             for(int i = 0; i < similarSymbol.length(); i++) {
                                 if(similarSymbol.charAt(i) == table) {
@@ -126,6 +132,7 @@ public class PasswdGen extends WindowAdapter {
                             }
                             if(flag) continue;
                         }
+                        previousChar = table;
                         result += table;
                         resultCount++;
                     }
@@ -138,6 +145,7 @@ public class PasswdGen extends WindowAdapter {
                         switch(select) {
                             case 1:
                                 table = (char)(Math.random() * 15 + 33);
+                                if(table == previousChar) continue;
                                 if(exceptSimilarSymbol) {
                                     for(int i = 0; i < similarSymbol.length(); i++) {
                                         if(similarSymbol.charAt(i) == table) {
@@ -147,10 +155,12 @@ public class PasswdGen extends WindowAdapter {
                                     }
                                     if(flag) continue;
                                 }
+                                previousChar = table;
                                 result += table;
                                 break;
                             case 2:
                                 table = (char)(Math.random() * 7 + 58);
+                                if(table == previousChar) continue;
                                 if(exceptSimilarSymbol) {
                                     for(int i = 0; i < similarSymbol.length(); i++) {
                                         if(similarSymbol.charAt(i) == table) {
@@ -160,10 +170,12 @@ public class PasswdGen extends WindowAdapter {
                                     }
                                     if(flag) continue;
                                 }
+                                previousChar = table;
                                 result += table;
                                 break;
                             case 3:
                                 table = (char)(Math.random() * 6 + 91);
+                                if(table == previousChar) continue;
                                 if(exceptSimilarSymbol) {
                                     for(int i = 0; i < similarSymbol.length(); i++) {
                                         if(similarSymbol.charAt(i) == table) {
@@ -173,10 +185,12 @@ public class PasswdGen extends WindowAdapter {
                                     }
                                     if(flag) continue;
                                 }
+                                previousChar = table;
                                 result += table;
                                 break;
                             case 4:
                                 table = (char)(Math.random() * 4 + 123);
+                                if(table == previousChar) continue;
                                 if(exceptSimilarSymbol) {
                                     for(int i = 0; i < similarSymbol.length(); i++) {
                                         if(similarSymbol.charAt(i) == table) {
@@ -186,13 +200,17 @@ public class PasswdGen extends WindowAdapter {
                                     }
                                     if(flag) continue;
                                 }
+                                previousChar = table;
                                 result += table;
                                 break;
                         }
                         resultCount++;
                     } else if(unique && generalSymbol) {
                         int select = (int)(Math.random() * exceptUniqueSymbol.length() + 1);
-                        result += exceptUniqueSymbol.charAt(select - 1);
+                        char table = exceptUniqueSymbol.charAt(select - 1);
+                        if(table == previousChar) continue;
+                        previousChar = table;
+                        result += table;
                         resultCount++;
                     }
                     break;
@@ -236,16 +254,16 @@ public class PasswdGen extends WindowAdapter {
 
         if(newline) {
             switch(level) {
-                case "ERR": 
+                case "ERR":
                     output = "<br><p style=\"color:red;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
-                case "WRN": 
+                case "WRN":
                     output = "<br><p style=\"color:orange;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
-                case "INFO": 
+                case "INFO":
                     output = "<br><p style=\"color:gray;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
-                case "NOTE": 
+                case "NOTE":
                     output = "<br><p style=\"color:black;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
                 default:
@@ -257,16 +275,16 @@ public class PasswdGen extends WindowAdapter {
             }
         } else {
             switch(level) {
-                case "ERR": 
+                case "ERR":
                     output = "<p style=\"color:red;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
-                case "WRN": 
+                case "WRN":
                     output = "<p style=\"color:orange;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
-                case "INFO": 
+                case "INFO":
                     output = "<p style=\"color:gray;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
-                case "NOTE": 
+                case "NOTE":
                     output = "<p style=\"color:black;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</p>";
                     break;
                 default:
@@ -297,16 +315,16 @@ public class PasswdGen extends WindowAdapter {
 
         try {
             switch(level) {
-                case "ERR": 
+                case "ERR":
                     output = "<br><span style=\"color:red;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
                     break;
-                case "WRN": 
+                case "WRN":
                     output = "<br><span style=\"color:orange;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
                     break;
-                case "INFO": 
+                case "INFO":
                     output = "<br><span style=\"color:gray;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
                     break;
-                case "NOTE": 
+                case "NOTE":
                     output = "<br><span style=\"color:black;\"<b>" + date + " " + time + " [" + level + "]:</b> " + log + "</span>";
                     break;
                 default:
@@ -382,21 +400,21 @@ public class PasswdGen extends WindowAdapter {
                                 case "unisym":
                                 case "verbose":
                                 case "clear":
-                                case "exit": 
-                                    setCharacterAttributes(wordL, wordR - wordL, cmdKeyword, false); 
+                                case "exit":
+                                    setCharacterAttributes(wordL, wordR - wordL, cmdKeyword, false);
                                     break;
                                 case " on":
-                                case " off": 
-                                    setCharacterAttributes(wordL, wordR - wordL, toggleKeyword, false); 
+                                case " off":
+                                    setCharacterAttributes(wordL, wordR - wordL, toggleKeyword, false);
                                     break;
                                 case " 1":case " 2":case " 3":case " 4":
                                 case " 5":case " 6":case " 7":case " 8":
                                 case " 9":case " 10":case " 11":case " 12":
                                 case " 13":case " 14":case " 15":case " 16":
-                                    setCharacterAttributes(wordL, wordR - wordL, number, false); 
+                                    setCharacterAttributes(wordL, wordR - wordL, number, false);
                                     break;
-                                default: 
-                                    setCharacterAttributes(wordL, wordR - wordL, syntaxError, false); 
+                                default:
+                                    setCharacterAttributes(wordL, wordR - wordL, syntaxError, false);
                                     break;
                             }
                             wordL = wordR;
@@ -424,21 +442,21 @@ public class PasswdGen extends WindowAdapter {
                     case "unisym":
                     case "verbose":
                     case "clear":
-                    case "exit": 
-                        setCharacterAttributes(before, after - before, cmdKeyword, false); 
+                    case "exit":
+                        setCharacterAttributes(before, after - before, cmdKeyword, false);
                         break;
                     case " on":
-                    case " off": 
-                        setCharacterAttributes(before, after - before, toggleKeyword, false); 
+                    case " off":
+                        setCharacterAttributes(before, after - before, toggleKeyword, false);
                         break;
                     case " 1":case " 2":case " 3":case " 4":
                     case " 5":case " 6":case " 7":case " 8":
                     case " 9":case " 10":case " 11":case " 12":
                     case " 13":case " 14":case " 15":case " 16":
-                        setCharacterAttributes(before, after - before, number, false); 
+                        setCharacterAttributes(before, after - before, number, false);
                         break;
-                    default: 
-                        setCharacterAttributes(before, after - before, syntaxError, false); 
+                    default:
+                        setCharacterAttributes(before, after - before, syntaxError, false);
                         break;
                 }
             }
@@ -594,9 +612,9 @@ public class PasswdGen extends WindowAdapter {
                     showAlert(mainView, mainView.getTitle() + "- 오류", "비밀번호 길이 필드에는 자연수만 입력해야 합니다. 비밀번호 길이 필드를 다시 한번 확인하시길 바랍니다. ");
                 } catch(NullPointerException exception) {
                     formatedLogcat("ERR", "비밀번호를 생성하는 도중 예외 발생: " + exception.toString() + "<br>&emsp;" + "이 예외를 <span style=\"color:blue;text-decoration:underline;\">https://github.com/HyeongminKim/PasswordsGenerator/issues</span> (@HyeongminKim) 에게 제보하세요."
-                            + "<br><&emsp;생성 길이: " + passwordCount.getText() + 
-                              "<br><&emsp;생성 갯수: " + createPassword + 
-                              "<br><&emsp;생성됨: " + generated + 
+                            + "<br><&emsp;생성 길이: " + passwordCount.getText() +
+                              "<br><&emsp;생성 갯수: " + createPassword +
+                              "<br><&emsp;생성됨: " + generated +
                               "<br><&emsp;옵션: containCaps(" + containCaps.getState() + "), containNum(" + containNum.getState() + "), containUniqueSymbol(" + containUniqueSymbol.getState() + ")" +
                               "<br><&emsp;세부 옵션: exceptsym(" + exceptSimilarSymbol + "), unisym(" + generalSymbol + ", " + exceptUniqueSymbol + "), verbose(" + debugMode + ")"
                         );
@@ -774,7 +792,7 @@ public class PasswdGen extends WindowAdapter {
                                             convert.deleteCharAt(j);
                                             j--;
                                             isEdited = true;
-                                        } 
+                                        }
                                     }
 
                                     if(exceptSimilarSymbol) {
